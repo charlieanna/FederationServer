@@ -61,11 +61,6 @@ namespace Client
     }
     public class Program
     {
-        public static string RepoStorage { get; set; } = "../../RepoStorage";
-        public static string BuildStorage { get; set; } = "../../BuilderStorage";
-        public static string TestStorage { get; set; } = "../../TestStorage";
-        public static List<string> files { get; set; } = new List<string>();
-
         static void Main(string[] args)
         {
             CommandClient();
@@ -99,14 +94,5 @@ namespace Client
             TestHarness.LoadDLL(testRequest);
             // put the test.logger inside the repo storage.
         }
-
-
-
     }
-
-        
-
-        
-
-        
 }
