@@ -49,21 +49,23 @@ namespace FederationServer
             "Testing Serialization of TestRequest data structure".title();
 
             Build.TestElement te1 = new Build.TestElement();
+            te1.toolchain = "csharp";
             te1.testName = "test1";
             te1.addDriver("TestDriver.cs");
             te1.addCode("Tested1.cs");
             te1.addCode("Tested2.cs");
 
-            //  TestElement te2 = new TestElement();
-            //   te2.testName = "test2";
-            //   te2.addDriver("td2.cs");
-            //   te2.addCode("tc3.cs");
-            //   te2.addCode("tc4.cs");
+            Build.TestElement te2 = new Build.TestElement();
+            te2.testName = "test2";
+            te2.toolchain = "java";
+            te2.addDriver("TestDriver.java");
+            te2.addCode("Tested1.java");
+            te2.addCode("Tested.java");
 
             BuildRequest tr = new BuildRequest();
             tr.author = "Jim Fawcett";
             tr.tests.Add(te1);
-            //tr.tests.Add(te2);
+            tr.tests.Add(te2);
             string trXml = tr.ToXml();
             Console.Write("\n  Serialized TestRequest data structure:\n\n  {0}\n", trXml);
             File.WriteAllText(BuildStorage + "/BuildRequest.xml", trXml);

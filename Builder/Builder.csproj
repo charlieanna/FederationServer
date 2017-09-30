@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="Builder.cs" />
     <Compile Include="BuildRequest.cs" />
+    <Compile Include="CSharpLibraryBuilder.cs" />
+    <Compile Include="JavaLibraryBuilder.cs" />
     <Compile Include="LibraryBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestElement.cs" />
