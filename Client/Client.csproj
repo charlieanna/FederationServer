@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder.cs" />
     <Compile Include="BuildRequest.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="DllLoaderExec.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
