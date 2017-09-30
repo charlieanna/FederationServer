@@ -14,7 +14,7 @@ namespace FederationServer
         public Builder()
         {
             BuildRequest buildRequest = ParseBuildRequest();
-            ReadFilesFromBuildStorageAndBuildDLLs(buildRequest);
+            BuildDLLs(buildRequest);
             SendLogs();
             CreateTestRequest();
         }
@@ -59,67 +59,12 @@ namespace FederationServer
             }
         }
 
-        public void ReadFilesFromBuildStorageAndBuildDLLs(BuildRequest request)
+        public void BuildDLLs(BuildRequest request)
         {
-            // for each test, build a dll for the test driver and a dll for each test codes files. 
-            var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
-
             foreach (TestElement testElement in request.tests)
             {
-                string driverPath = BuildStorage + "/" + testElement.testDriver;
-                List<string> tests = testElement.testCodes;
-                List<string> testNames = new List<string>();
-
-                foreach (string test in tests)
-                {
-                    testNames.Add(test);
-                }
-
-
-                try
-                {
-                    Process process = new Process();
-                    process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                    process.StartInfo.Arguments = "/target:library /out:" + testElement.testName + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-                    string output = process.StandardOutput.ReadToEnd();
-                    using (System.IO.StreamWriter file =
-                    new System.IO.StreamWriter(@"build1.log"))
-                    {
-                        file.Write(output);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.Write(e.Message);
-                }
-                testNames.Add(testElement.testDriver);
-                try
-                {
-                    Process process = new Process();
-                    string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
-                    process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                    process.StartInfo.Arguments = "/target:library /out:" + driver + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-                    string output = process.StandardOutput.ReadToEnd();
-                    using (System.IO.StreamWriter file =
-                    new System.IO.StreamWriter(@"build.log"))
-                    {
-                        file.Write(output);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.Write(e.Message);
-                }
+                LibraryBuilder lBuilder = new LibraryBuilder();
+                lBuilder.build(BuildStorage, testElement);
             }
             string[] tempFiles = Directory.GetFiles(".", "*.dll");
             for (int i = 0; i < tempFiles.Length; ++i)
