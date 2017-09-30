@@ -74,7 +74,6 @@ namespace Client
             BuildRequest buildRequest = ParseBuildRequest();
             ReadFilesFromBuildStorageAndBuildDLLs(buildRequest);
             SendLogs();
-            // create the logger file and put it in the repo storage.
             CreateTestRequest();
             TestRequest testRequest = ParseTestRequest();
             LoadDLL(testRequest);
