@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{257B6065-F7B1-43B3-A10B-A864FA158338}</ProjectGuid>
+    <ProjectGuid>{A6FCE16B-680D-4F0B-8119-EE6CEEF5E5FE}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Repo</RootNamespace>
-    <AssemblyName>Repo</AssemblyName>
+    <RootNamespace>Utilities</RootNamespace>
+    <AssemblyName>Utilities</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,21 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Repo.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Environment\Environment.csproj">
-      <Project>{ac2bd981-2a80-429c-b646-35a4f1301284}</Project>
-      <Name>Environment</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MsgPassing\MsgPassing.csproj">
-      <Project>{e2377108-3362-4a72-a4cb-cfafd13df4b8}</Project>
-      <Name>MsgPassing</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

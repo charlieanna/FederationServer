@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Builder
+namespace FederationServer.Build
 {
     public class TestElement  /* information about a single test */
     {

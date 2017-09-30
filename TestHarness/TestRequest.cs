@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Build
+namespace FederationServer
 {
     public class TestRequest  /* a container for one or more TestElements */
     {

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using FederationServer.Build;
+using System;
 using System.Collections.Generic;
 
-namespace Builder
+namespace FederationServer
 {
     public class BuildRequest  /* a container for one or more TestElements */
     {

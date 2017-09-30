@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client
+namespace FederationServer
 {
     class Client
     {
@@ -48,7 +48,7 @@ namespace Client
 
             "Testing Serialization of TestRequest data structure".title();
 
-            TestElement te1 = new TestElement();
+            Build.TestElement te1 = new Build.TestElement();
             te1.testName = "test1";
             te1.addDriver("TestDriver.cs");
             te1.addCode("Tested1.cs");

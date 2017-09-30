@@ -21,7 +21,7 @@ using System;
 using System.Reflection;
 using System.IO;
 
-namespace Client
+namespace FederationServer
 {
     class DllLoaderExec
     {

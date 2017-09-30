@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client
+namespace FederationServer
 {
-    class Repository
+    public class Repository
     {
         public Repository()
         {
