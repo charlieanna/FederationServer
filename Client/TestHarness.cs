@@ -9,11 +9,17 @@ namespace Client
 {
     public class TestHarness
     {
+        public TestHarness()
+        {
+            TestRequest testRequest = ParseTestRequest();
+            LoadDLL(testRequest);
+            // put the test.logger inside the repo storage.
+        }
         public static string RepoStorage { get; set; } = "../../RepoStorage";
         public static string BuildStorage { get; set; } = "../../BuilderStorage";
         public static string TestStorage { get; set; } = "../../TestStorage";
         public static List<string> files { get; set; } = new List<string>();
-        public static TestRequest ParseTestRequest()
+        public TestRequest ParseTestRequest()
         {
             //read from xml file. 
             string trXml = File.ReadAllText(TestStorage + "/TestRequest.xml");
@@ -25,7 +31,7 @@ namespace Client
             return testRequest;
         }
 
-        public static void LoadDLL(TestRequest testRequest)
+        public void LoadDLL(TestRequest testRequest)
         {
             Console.Write("\n  Demonstrating Robust Test Loader");
             Console.Write("\n ==================================\n");

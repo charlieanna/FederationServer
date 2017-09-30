@@ -5,6 +5,7 @@ namespace Client
 {
     public class TestRequest  /* a container for one or more TestElements */
     {
+        
         public string author { get; set; }
         public List<TestElement> tests { get; set; } = new List<TestElement>();
 

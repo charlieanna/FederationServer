@@ -9,11 +9,15 @@ namespace Client
 {
     class Repository
     {
+        public Repository()
+        {
+            CopyFilesFromRepoStorageToBuildStorage();
+        }
         public static string RepoStorage { get; set; } = "../../RepoStorage";
         public static string BuildStorage { get; set; } = "../../BuilderStorage";
         public static string TestStorage { get; set; } = "../../TestStorage";
         public static List<string> files { get; set; } = new List<string>();
-        public static void CopyFilesFromRepoStorageToBuildStorage()
+        public void CopyFilesFromRepoStorageToBuildStorage()
         {
             //read files from the repoStorage and move move to the buildStorage
             string[] tempFiles = Directory.GetFiles(RepoStorage, "*.*");

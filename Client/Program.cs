@@ -63,36 +63,11 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            CommandClient();
-            CommandRepository();
-            CommandBuilder();
-            CommandTestHarness();
+            Client client = new Client();
+            Repository repository = new Repository();
+            Builder builder = new Builder();
+            TestHarness testHarness = new TestHarness();
         }
 
-        private static void CommandClient()
-        {
-            Client.CleanDirectories();
-            Client.CreateBuildRequest();
-        }
-
-        private static void CommandRepository()
-        {
-            Repository.CopyFilesFromRepoStorageToBuildStorage();
-        }
-
-        private static void CommandBuilder()
-        {
-            BuildRequest buildRequest = Builder.ParseBuildRequest();
-            Builder.ReadFilesFromBuildStorageAndBuildDLLs(buildRequest);
-            Builder.SendLogs();
-            Builder.CreateTestRequest();
-        }
-
-        private static void CommandTestHarness()
-        {
-            TestRequest testRequest = TestHarness.ParseTestRequest();
-            TestHarness.LoadDLL(testRequest);
-            // put the test.logger inside the repo storage.
-        }
     }
 }

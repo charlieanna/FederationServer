@@ -10,11 +10,18 @@ namespace Client
 {
     class Builder
     {
+        public Builder()
+        {
+            BuildRequest buildRequest = ParseBuildRequest();
+            ReadFilesFromBuildStorageAndBuildDLLs(buildRequest);
+            SendLogs();
+            CreateTestRequest();
+        }
         public static string RepoStorage { get; set; } = "../../RepoStorage";
         public static string BuildStorage { get; set; } = "../../BuilderStorage";
         public static string TestStorage { get; set; } = "../../TestStorage";
         public static List<string> files { get; set; } = new List<string>();
-        public static BuildRequest ParseBuildRequest()
+        public BuildRequest ParseBuildRequest()
         {
             //read from xml file. 
             string trXml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
@@ -27,7 +34,7 @@ namespace Client
 
         }
 
-        public static void SendLogs()
+        public void SendLogs()
         {
             string[] tempFiles = Directory.GetFiles(".", "*.log");
             for (int i = 0; i < tempFiles.Length; ++i)
@@ -51,7 +58,7 @@ namespace Client
             }
         }
 
-        public static void ReadFilesFromBuildStorageAndBuildDLLs(BuildRequest request)
+        public void ReadFilesFromBuildStorageAndBuildDLLs(BuildRequest request)
         {
             // for each test, build a dll for the test driver and a dll for each test codes files. 
             var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
@@ -141,7 +148,7 @@ namespace Client
 
 
 
-        public static void CreateTestRequest()
+        public void CreateTestRequest()
         {
 
             "Testing THMessage Class".title('=');

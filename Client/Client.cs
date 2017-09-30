@@ -9,10 +9,15 @@ namespace Client
 {
     class Client
     {
+        public Client()
+        {
+            CleanDirectories();
+            CreateBuildRequest();
+        }
         public static string RepoStorage { get; set; } = "../../RepoStorage";
         public static string BuildStorage { get; set; } = "../../BuilderStorage";
         public static string TestStorage { get; set; } = "../../TestStorage";
-        public static void CleanDirectories()
+        public void CleanDirectories()
         {
             if (!Directory.Exists(RepoStorage))
                 Directory.CreateDirectory(RepoStorage);
@@ -33,7 +38,7 @@ namespace Client
             }
         }
 
-        public static void CreateBuildRequest()
+        public void CreateBuildRequest()
         {
             "Testing THMessage Class".title('=');
             Console.WriteLine();
