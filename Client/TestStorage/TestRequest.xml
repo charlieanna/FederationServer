@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-16"?>
+<TestRequest>
+  <author>Jim Fawcett</author>
+  <tests>
+    <TestElement>
+      <testName>test1</testName>
+      <testDriver>td1.dll</testDriver>
+      <testCodes>
+        <string>tc1.dll</string>
+        <string>tc2.dll</string>
+      </testCodes>
+    </TestElement>
+    <TestElement>
+      <testName>test2</testName>
+      <testDriver>td2.dll</testDriver>
+      <testCodes>
+        <string>tc3.dll</string>
+        <string>tc4.dll</string>
+      </testCodes>
+    </TestElement>
+  </tests>
+</TestRequest>

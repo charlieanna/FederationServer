@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-16"?>
+<BuildRequest>
+  <author>Jim Fawcett</author>
+  <tests>
+    <TestElement>
+      <testName>test1</testName>
+      <testDriver>TestDriver.cs</testDriver>
+      <testCodes>
+        <string>Tested1.cs</string>
+        <string>Tested2.cs</string>
+      </testCodes>
+    </TestElement>
+  </tests>
+</BuildRequest>
