@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FederationServer
 {
-    class Client
+    public class Client
     {
         public Client()
         {
