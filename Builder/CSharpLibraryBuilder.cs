@@ -28,14 +28,15 @@ namespace FederationServer
             {
                 testNames.Add(test);
             }
-            string frameworkPath = testDriverBuilder(testElement, testNames);
+            testDriverBuilder(testElement, testNames);
             testNames.Add(testElement.testDriver);
-            sourceCodeBuilder(testElement, testNames, frameworkPath);
+            sourceCodeBuilder(testElement, testNames);
         }
 
 
-        private void sourceCodeBuilder(TestElement testElement, List<string> testNames, string frameworkPath)
+        private void sourceCodeBuilder(TestElement testElement, List<string> testNames)
         {
+            var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
             try
             {
                 Process process = new Process();

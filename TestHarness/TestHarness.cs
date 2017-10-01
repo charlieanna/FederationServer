@@ -17,9 +17,7 @@ namespace FederationServer
             LoadDLL(testRequest);
             // put the test.logger inside the repo storage.
         }
-        public static string RepoStorage { get; set; } = "../../RepoStorage";
-        public static string BuildStorage { get; set; } = "../../BuilderStorage";
-        public static string TestStorage { get; set; } = "../../TestStorage";
+        public static string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
         public static List<string> files { get; set; } = new List<string>();
         public TestRequest ParseTestRequest()
         {
@@ -60,7 +58,9 @@ namespace FederationServer
                 else if(test.toolchain == "java")
                 {
                     JavaLoaderExec loader = new JavaLoaderExec();
-                    loader.test(test);
+                    string result = loader.test(test);
+                    Console.Write("\n\n  {0}", result);
+                    Console.Write("\n\n");
                 }
             }
         }

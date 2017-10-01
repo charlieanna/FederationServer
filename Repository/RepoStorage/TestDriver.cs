@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace CSTestDemo
 {
+  interface ITest
+  {
+    bool test();
+  }
   public class TestDriver : ITest
   {
     bool testTested1()

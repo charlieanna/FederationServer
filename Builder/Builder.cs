@@ -18,10 +18,11 @@ namespace FederationServer
             SendLogs();
             CreateTestRequest();
         }
-        public static string RepoStorage { get; set; } = "../../RepoStorage";
-        public static string BuildStorage { get; set; } = "../../BuilderStorage";
-        public static string TestStorage { get; set; } = "../../TestStorage";
+        public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
+        public static string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
+        public static string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
         public static List<string> files { get; set; } = new List<string>();
+        public static List<string> files1 { get; set; } = new List<string>();
         public BuildRequest ParseBuildRequest()
         {
             //read from xml file. 
@@ -88,6 +89,29 @@ namespace FederationServer
                     Console.Write("\n--{0}--", ex.Message);
                 }
             }
+
+            string[] tempFiles1 = Directory.GetFiles(".", "*.jar");
+            for (int i = 0; i < tempFiles1.Length; ++i)
+            {
+                tempFiles1[i] = Path.GetFullPath(tempFiles1[i]);
+            }
+            files1.Clear();
+            files1.AddRange(tempFiles1);
+            foreach (string file in files1)
+            {
+                try
+                {
+                    if (!Directory.Exists(TestStorage))
+                        Directory.CreateDirectory(TestStorage);
+                    string fileName = Path.GetFileName(file);
+                    string destSpec = Path.Combine(TestStorage, fileName);
+                    File.Copy(file, destSpec, true);
+                }
+                catch (Exception ex)
+                {
+                    Console.Write("\n--{0}--", ex.Message);
+                }
+            }
         }
 
 
@@ -108,14 +132,14 @@ namespace FederationServer
             TestElement te1 = new TestElement();
             te1.testName = "test1";
             te1.toolchain = "csharp";
-            te1.addDriver("td1.dll");
+            te1.addDriver("TestDriver.dll");
             te1.addCode("tc1.dll");
             te1.addCode("tc2.dll");
 
             TestElement te2 = new TestElement();
             te2.testName = "test2";
             te2.toolchain = "java";
-            te2.addDriver("JavaTestDriver.jar");
+            te2.addDriver("TestDriver.jar");
             te2.addCode("tc3.dll");
             te2.addCode("tc4.dll");
 

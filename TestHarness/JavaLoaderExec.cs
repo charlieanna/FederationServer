@@ -29,7 +29,7 @@ namespace FederationServer
                 }
             }
         }
-        public void test(TestElement testElement)
+        public string test(TestElement testElement)
         {
             string installPath = GetJavaInstallationPath();
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
@@ -57,6 +57,7 @@ namespace FederationServer
             {
                 Console.Write(e.Message);
             }
+            return "true";
         }
 
     }

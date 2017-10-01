@@ -4,7 +4,8 @@
   <tests>
     <TestElement>
       <testName>test1</testName>
-      <testDriver>td1.dll</testDriver>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriver.dll</testDriver>
       <testCodes>
         <string>tc1.dll</string>
         <string>tc2.dll</string>
@@ -12,7 +13,8 @@
     </TestElement>
     <TestElement>
       <testName>test2</testName>
-      <testDriver>td2.dll</testDriver>
+      <toolchain>java</toolchain>
+      <testDriver>TestDriver.jar</testDriver>
       <testCodes>
         <string>tc3.dll</string>
         <string>tc4.dll</string>

@@ -13,12 +13,13 @@ namespace FederationServer
         {
             CopyFilesFromRepoStorageToBuildStorage();
         }
-        public static string RepoStorage { get; set; } = "../../RepoStorage";
-        public static string BuildStorage { get; set; } = "../../BuilderStorage";
-        public static string TestStorage { get; set; } = "../../TestStorage";
+        public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
+        public static string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
         public static List<string> files { get; set; } = new List<string>();
         public void CopyFilesFromRepoStorageToBuildStorage()
         {
+            if (!Directory.Exists(BuildStorage))
+                Directory.CreateDirectory(BuildStorage);
             //read files from the repoStorage and move move to the buildStorage
             string[] tempFiles = Directory.GetFiles(RepoStorage, "*.*");
             for (int i = 0; i < tempFiles.Length; ++i)

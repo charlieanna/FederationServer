@@ -14,28 +14,14 @@ namespace FederationServer
             CleanDirectories();
             CreateBuildRequest();
         }
-        public static string RepoStorage { get; set; } = "../../RepoStorage";
-        public static string BuildStorage { get; set; } = "../../BuilderStorage";
-        public static string TestStorage { get; set; } = "../../TestStorage";
+        public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
+       
         public void CleanDirectories()
         {
             if (!Directory.Exists(RepoStorage))
                 Directory.CreateDirectory(RepoStorage);
-            if (!Directory.Exists(BuildStorage))
-                Directory.CreateDirectory(BuildStorage);
-            if (!Directory.Exists(TestStorage))
-                Directory.CreateDirectory(TestStorage);
-            System.IO.DirectoryInfo di = new DirectoryInfo(BuildStorage);
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-            DirectoryInfo di1 = new DirectoryInfo(TestStorage);
-            foreach (FileInfo file in di1.GetFiles())
-            {
-                file.Delete();
-            }
+            
+            
         }
 
         public void CreateBuildRequest()
@@ -58,9 +44,9 @@ namespace FederationServer
             Build.TestElement te2 = new Build.TestElement();
             te2.testName = "test2";
             te2.toolchain = "java";
-            te2.addDriver("JavaTestDriver.java");
-            te2.addCode("JavaSource1.java");
-            te2.addCode("JavaSource2.java");
+            te2.addDriver("TestDriver.java");
+            te2.addCode("Tested1.java");
+            te2.addCode("Tested2.java");
 
             BuildRequest tr = new BuildRequest();
             tr.author = "Jim Fawcett";
@@ -68,7 +54,7 @@ namespace FederationServer
             tr.tests.Add(te2);
             string trXml = tr.ToXml();
             Console.Write("\n  Serialized TestRequest data structure:\n\n  {0}\n", trXml);
-            File.WriteAllText(BuildStorage + "/BuildRequest.xml", trXml);
+            File.WriteAllText(RepoStorage + "/BuildRequest.xml", trXml);
 
         }
     }

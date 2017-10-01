@@ -80,7 +80,7 @@ namespace FederationServer
                 string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
                 Process process = new Process();
                 process.StartInfo.FileName = jarPath;
-                process.StartInfo.Arguments = "cfe " + driver +".jar " + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.Arguments = "cfe " + driver +".jar TestDriver TestDriver.class" + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;
@@ -118,7 +118,7 @@ namespace FederationServer
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
                 using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"build2.log"))
+                new System.IO.StreamWriter(@"build3.log"))
                 {
                     file.Write(output);
                 }

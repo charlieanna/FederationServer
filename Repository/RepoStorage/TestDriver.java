@@ -1,6 +1,6 @@
-public class TestDriver implements ITest
+public class TestDriver
   {
-    boolean testTested1()
+    static boolean testTested1()
     {
       boolean result = true;
       Tested1 td1 = new Tested1();
@@ -12,7 +12,7 @@ public class TestDriver implements ITest
       }
       return result;
     }
-    boolean testTested2()
+    static boolean testTested2()
     {
       boolean result = true;
       Tested2 td2 = new Tested2();
@@ -21,6 +21,12 @@ public class TestDriver implements ITest
       if (value != 3)
         result = false;
       return result;
+    }
+    
+    public static void main(String args[]){
+      boolean result1 = testTested1();
+      boolean result2 = testTested2();
+      System.out.println(result1 && result2);
     }
     public boolean test()
     {
