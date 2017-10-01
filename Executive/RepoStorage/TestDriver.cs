@@ -16,7 +16,6 @@ namespace CSTestDemo
   {
     bool test();
   }
-
   public class TestDriver : ITest
   {
     bool testTested1()
