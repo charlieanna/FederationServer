@@ -63,7 +63,7 @@ namespace FederationServer
 
             // c : \Users\Ankur Kothari>java -jar te.jar
   
-              string installPath = GetJavaInstallationPath();
+            string installPath = GetJavaInstallationPath();
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
             string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
             string javacPath = Path.Combine(installPath, "bin\\Javac.exe");

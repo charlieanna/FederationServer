@@ -37,22 +37,32 @@ namespace FederationServer
         {
             Console.Write("\n  Demonstrating Robust Test Loader");
             Console.Write("\n ==================================\n");
+            foreach (TestElement test in testRequest.tests)
+            {
+                if (test.toolchain == "csharp")
+                {
+                    DllLoaderExec loader = new DllLoaderExec();
 
-            DllLoaderExec loader = new DllLoaderExec();
+                    DllLoaderExec.testersLocation = TestStorage;
 
-            DllLoaderExec.testersLocation = TestStorage;
+                    // convert testers relative path to absolute path
 
-            // convert testers relative path to absolute path
+                    DllLoaderExec.testersLocation = Path.GetFullPath(DllLoaderExec.testersLocation);
+                    Console.Write("\n  Loading Test Modules from:\n    {0}\n", DllLoaderExec.testersLocation);
 
-            DllLoaderExec.testersLocation = Path.GetFullPath(DllLoaderExec.testersLocation);
-            Console.Write("\n  Loading Test Modules from:\n    {0}\n", DllLoaderExec.testersLocation);
+                    // run load and tests
 
-            // run load and tests
+                    string result = loader.loadAndExerciseTesters();
 
-            string result = loader.loadAndExerciseTesters();
-
-            Console.Write("\n\n  {0}", result);
-            Console.Write("\n\n");
+                    Console.Write("\n\n  {0}", result);
+                    Console.Write("\n\n");
+                }
+                else if(test.toolchain == "java")
+                {
+                    JavaLoaderExec loader = new JavaLoaderExec();
+                    loader.test(test);
+                }
+            }
         }
 
     }

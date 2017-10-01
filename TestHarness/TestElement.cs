@@ -10,6 +10,8 @@ namespace FederationServer
     {
         public string testName { get; set; }
         public string testDriver { get; set; }
+
+        public string toolchain { get; set; }
         public List<string> testCodes { get; set; } = new List<string>();
 
         public TestElement() { }

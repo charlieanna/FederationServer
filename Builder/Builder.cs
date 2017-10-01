@@ -107,13 +107,15 @@ namespace FederationServer
 
             TestElement te1 = new TestElement();
             te1.testName = "test1";
+            te1.toolchain = "csharp";
             te1.addDriver("td1.dll");
             te1.addCode("tc1.dll");
             te1.addCode("tc2.dll");
 
             TestElement te2 = new TestElement();
             te2.testName = "test2";
-            te2.addDriver("td2.dll");
+            te2.toolchain = "java";
+            te2.addDriver("JavaTestDriver.jar");
             te2.addCode("tc3.dll");
             te2.addCode("tc4.dll");
 

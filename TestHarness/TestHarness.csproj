@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllLoaderExec.cs" />
+    <Compile Include="JavaLoaderExec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestElement.cs" />
     <Compile Include="TestHarness.cs" />
