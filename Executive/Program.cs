@@ -13,11 +13,15 @@ namespace FederationServer
     {
         static void Main(string[] args)
         {
+           
             Client client = new Client();
             Repository repository = new Repository();
             Builder builder = new Builder();
             TestHarness testHarness = new TestHarness();
         }
+
+        
+        
 
     }
 }

@@ -58,9 +58,9 @@ namespace FederationServer
             Build.TestElement te2 = new Build.TestElement();
             te2.testName = "test2";
             te2.toolchain = "java";
-            te2.addDriver("TestDriver.java");
-            te2.addCode("Tested1.java");
-            te2.addCode("Tested.java");
+            te2.addDriver("JavaTestDriver.java");
+            te2.addCode("JavaSource1.java");
+            te2.addCode("JavaSource2.java");
 
             BuildRequest tr = new BuildRequest();
             tr.author = "Jim Fawcett";

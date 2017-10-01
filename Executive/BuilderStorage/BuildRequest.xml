@@ -14,10 +14,10 @@
     <TestElement>
       <testName>test2</testName>
       <toolchain>java</toolchain>
-      <testDriver>TestDriver.java</testDriver>
+      <testDriver>JavaTestDriver.java</testDriver>
       <testCodes>
-        <string>Tested1.java</string>
-        <string>Tested.java</string>
+        <string>JavaSource1.java</string>
+        <string>JavaSource2.java</string>
       </testCodes>
     </TestElement>
   </tests>
