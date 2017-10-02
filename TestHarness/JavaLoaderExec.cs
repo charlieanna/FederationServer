@@ -48,7 +48,7 @@ namespace FederationServer
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
                 using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"build2.log"))
+                new System.IO.StreamWriter(@"java.log"))
                 {
                     file.Write(output);
                 }

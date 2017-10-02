@@ -1,10 +1,6 @@
-public interface ITest
+public class TestDriver
   {
-    boolean test();
-  }
-public class TestDriver implements ITest
-  {
-    boolean testTested1()
+    static boolean testTested1()
     {
       boolean result = true;
       Tested1 td1 = new Tested1();
@@ -16,7 +12,7 @@ public class TestDriver implements ITest
       }
       return result;
     }
-    boolean testTested2()
+    static boolean testTested2()
     {
       boolean result = true;
       Tested2 td2 = new Tested2();

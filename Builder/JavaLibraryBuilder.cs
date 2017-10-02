@@ -32,8 +32,9 @@ namespace FederationServer
             {
                 testNames.Add(test);
             }
-            sourceCodeBuilder(testElement, testNames);
+            // goes into executive.
             testNames.Add(testElement.testDriver);
+            sourceCodeBuilder(testElement, testNames);
             testDriverBuilder(testElement, testNames);
         }
 
@@ -57,7 +58,7 @@ namespace FederationServer
             }
         }
 
-        private static void sourceCodeBuilder(TestElement testElement, List<string> testNames)
+        private static void testDriverBuilder(TestElement testElement, List<string> testNames)
         {
             //c: \Users\Ankur Kothari> "C:\\Program Files (x86)\\Java\\jdk1.8.0_144\\bin\\Jar.exe" cfe te.jar HelloWorld HelloWorld.class
 
@@ -80,7 +81,7 @@ namespace FederationServer
                 string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
                 Process process = new Process();
                 process.StartInfo.FileName = jarPath;
-                process.StartInfo.Arguments = "cfe " + driver +".jar TestDriver TestDriver.class" + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.Arguments = "cfe " + driver +".jar TestDriver TestDriver.class " + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;
@@ -99,7 +100,7 @@ namespace FederationServer
             }
         }
 
-        private static void testDriverBuilder(TestElement testElement, List<string> testNames)
+        private static void sourceCodeBuilder(TestElement testElement, List<string> testNames)
         {
             string installPath = GetJavaInstallationPath();
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
