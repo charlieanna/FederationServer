@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-16"?>
+<BuildRequest>
+  <author>Jim Fawcett</author>
+  <tests>
+    <TestElement>
+      <testName>test1</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriver.cs</testDriver>
+      <testCodes>
+        <string>Tested1.cs</string>
+        <string>Tested2.cs</string>
+      </testCodes>
+    </TestElement>
+    <TestElement>
+      <testName>test2</testName>
+      <toolchain>java</toolchain>
+      <testDriver>TestDriver.java</testDriver>
+      <testCodes>
+        <string>Tested1.java</string>
+        <string>Tested2.java</string>
+      </testCodes>
+    </TestElement>
+  </tests>
+</BuildRequest>

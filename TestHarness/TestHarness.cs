@@ -18,9 +18,9 @@ namespace FederationServer
             start();
             // put the test.logger inside the repo storage.
         }
-        public static string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
-        public static List<string> files { get; set; } = new List<string>();
-        public void execute()
+        public  string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
+        public  List<string> files { get; set; } = new List<string>();
+        private void execute()
         {
             TestRequest testRequest = ParseTestRequest();
             LoadDLL(testRequest);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-16"?>
+<TestRequest>
+  <author>Jim Fawcett</author>
+  <tests>
+    <TestElement>
+      <testName>test1</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriver.dll</testDriver>
+      <testCodes>
+        <string>test1.dll</string>
+      </testCodes>
+    </TestElement>
+    <TestElement>
+      <testName>test2</testName>
+      <toolchain>java</toolchain>
+      <testDriver>TestDriver.java</testDriver>
+      <testCodes />
+    </TestElement>
+  </tests>
+</TestRequest>

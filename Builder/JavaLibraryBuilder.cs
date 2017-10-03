@@ -30,15 +30,15 @@ namespace FederationServer
 
             foreach (string test in tests)
             {
-                testNames.Add(test);
+                testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + test);
             }
             // goes into executive.
-            testNames.Add(testElement.testDriver);
+            testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + testElement.testDriver);
             sourceCodeBuilder(testElement, testNames);
             testDriverBuilder(testElement, testNames);
         }
 
-        private static string GetJavaInstallationPath()
+        private string GetJavaInstallationPath()
         {
             string environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
             if (!string.IsNullOrEmpty(environmentPath))
@@ -52,18 +52,13 @@ namespace FederationServer
                 string currentVersion = rk.GetValue("CurrentVersion").ToString();
                 using (Microsoft.Win32.RegistryKey key = rk.OpenSubKey(currentVersion))
                 {
-                    Console.Write(key.GetValueNames());
                     return key.GetValue("JavaHome").ToString();
                 }
             }
         }
 
-        private static void testDriverBuilder(TestElement testElement, List<string> testNames)
+        private void testDriverBuilder(TestElement testElement, List<string> testNames)
         {
-            //c: \Users\Ankur Kothari> "C:\\Program Files (x86)\\Java\\jdk1.8.0_144\\bin\\Jar.exe" cfe te.jar HelloWorld HelloWorld.class
-
-            // c : \Users\Ankur Kothari>java -jar te.jar
-  
             string installPath = GetJavaInstallationPath();
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
             string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
@@ -73,7 +68,7 @@ namespace FederationServer
 
             foreach (string test in tests)
             {
-                string kclass = test.Remove(test.LastIndexOf("."));
+                string kclass = "..\\..\\..\\Builder\\BuilderStorage\\" + test.Remove(test.LastIndexOf("."));
                 classNames.Add(kclass + ".class");
             }
             try
@@ -81,7 +76,7 @@ namespace FederationServer
                 string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
                 Process process = new Process();
                 process.StartInfo.FileName = jarPath;
-                process.StartInfo.Arguments = "cfe " + driver +".jar TestDriver TestDriver.class " + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.Arguments = "cfe ..\\..\\..\\TestHarness\\TestStorage\\" + driver +".jar TestDriver TestDriver.class " + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;
@@ -100,7 +95,7 @@ namespace FederationServer
             }
         }
 
-        private static void sourceCodeBuilder(TestElement testElement, List<string> testNames)
+        private void sourceCodeBuilder(TestElement testElement, List<string> testNames)
         {
             string installPath = GetJavaInstallationPath();
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
@@ -109,9 +104,10 @@ namespace FederationServer
             var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
             try
             {
+                //puts the .class files in the build storage
                 Process process = new Process();
                 process.StartInfo.FileName = javacPath;
-                process.StartInfo.Arguments = String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.Arguments = String.Join(" ", testNames); 
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;

@@ -12,15 +12,12 @@ namespace FederationServer
     {
         public Executive()
         {
-            string RepoStorage = "../../../Repository/RepoStorage";
             string BuildStorage = "../../../Builder/BuilderStorage";
             string TestStorage = "../../../TestHarness/TestStorage";
-            if (Directory.Exists(RepoStorage))
-                Directory.Delete(RepoStorage, true);
-            if (Directory.Exists(BuildStorage))
-                Directory.Delete(BuildStorage, true);
-            if (Directory.Exists(TestStorage))
-                Directory.Delete(TestStorage, true);
+            //if (Directory.Exists(BuildStorage))
+            //    Directory.Delete(BuildStorage, true);
+            //if (Directory.Exists(TestStorage))
+            //    Directory.Delete(TestStorage, true);
             environ.client = new Client();
             environ.repo = new Repository();
             environ.builder = new Builder();

@@ -15,9 +15,9 @@ namespace FederationServer
             rcvQ = new BlockingQueue<Message>();
             start();
         }
-        public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
-        public static string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
-        public static List<string> files { get; set; } = new List<string>();
+        public string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
+        public string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
+        public List<string> files { get; set; } = new List<string>();
 
         public override void processMessage(Message msg)
         {
@@ -32,7 +32,7 @@ namespace FederationServer
             CopyFilesFromRepoStorageToBuildStorage();
         }
 
-        public void CopyFilesFromRepoStorageToBuildStorage()
+        private void CopyFilesFromRepoStorageToBuildStorage()
         {
             if (!Directory.Exists(BuildStorage))
                 Directory.CreateDirectory(BuildStorage);
@@ -53,7 +53,7 @@ namespace FederationServer
 
         }
 
-        public static bool sendFile(string fileSpec)
+        private bool sendFile(string fileSpec)
         {
             try
             {
@@ -68,7 +68,5 @@ namespace FederationServer
                 return false;
             }
         }
-
-
     }
 }

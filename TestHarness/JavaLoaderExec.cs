@@ -10,7 +10,7 @@ namespace FederationServer
 {
     public class JavaLoaderExec
     {
-        private static string GetJavaInstallationPath()
+        private string GetJavaInstallationPath()
         {
             string environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
             if (!string.IsNullOrEmpty(environmentPath))

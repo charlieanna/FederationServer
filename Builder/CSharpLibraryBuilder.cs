@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,15 +22,19 @@ namespace FederationServer
         public void build()
         {
             string driverPath = BuildStorage + "/" + testElement.testDriver;
+
+            
+
             List<string> tests = testElement.testCodes;
             List<string> testNames = new List<string>();
 
             foreach (string test in tests)
             {
-                testNames.Add(test);
+                
+                testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\"+ test);
             }
             testDriverBuilder(testElement, testNames);
-            testNames.Add(testElement.testDriver);
+            testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\"+testElement.testDriver);
             sourceCodeBuilder(testElement, testNames);
         }
 
@@ -42,7 +47,7 @@ namespace FederationServer
                 Process process = new Process();
                 string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
                 process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                process.StartInfo.Arguments = "/target:library /out:" + driver + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" + driver + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;
@@ -68,7 +73,7 @@ namespace FederationServer
             {
                 Process process = new Process();
                 process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                process.StartInfo.Arguments = "/target:library /out:" + testElement.testName + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" + testElement.testName + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;

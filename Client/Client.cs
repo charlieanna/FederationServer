@@ -10,6 +10,7 @@ namespace FederationServer
 {
     public class Client : CommunicatorBase
     {
+        private string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
         public Client()
         {
             rcvQ = new BlockingQueue<Message>();
@@ -26,26 +27,17 @@ namespace FederationServer
 
         private void execute()
         {
-            CleanDirectories();
             CreateBuildRequest();
         }
-        public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
-       
-        public void CleanDirectories()
-        {
-            if (!Directory.Exists(RepoStorage))
-                Directory.CreateDirectory(RepoStorage);
-        }
 
-        public void CreateBuildRequest()
-        {
-            "Testing THMessage Class".title('=');
-            Console.WriteLine();
 
+        private void CreateBuildRequest()
+        {
             ///////////////////////////////////////////////////////////////
-            // Serialize and Deserialize TestRequest data structure
+            // Serialize Build Request data structure
 
-            "Testing Serialization of TestRequest data structure".title();
+            "Creating Build Request".title();
+            Console.WriteLine();
 
             Build.TestElement te1 = new Build.TestElement();
             te1.toolchain = "csharp";
@@ -68,7 +60,6 @@ namespace FederationServer
             string trXml = tr.ToXml();
             Console.Write("\n  Serialized TestRequest data structure:\n\n  {0}\n", trXml);
             File.WriteAllText(RepoStorage + "/BuildRequest.xml", trXml);
-
         }
     }
 }
