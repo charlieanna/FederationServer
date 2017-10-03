@@ -1,4 +1,5 @@
 ﻿using FederationServer.Build;
+using SWTools;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,21 +10,35 @@ using System.Threading.Tasks;
 
 namespace FederationServer
 {
-    public class Builder
+    public class Builder : CommunicatorBase
     {
         public Builder()
         {
-            BuildRequest buildRequest = ParseBuildRequest();
-            BuildDLLs(buildRequest);
-            SendLogs();
-            CreateTestRequest();
+            rcvQ = new BlockingQueue<Message>();
+            start();
         }
         public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
         public static string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
         public static string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
         public static List<string> files { get; set; } = new List<string>();
         public static List<string> files1 { get; set; } = new List<string>();
-        public BuildRequest ParseBuildRequest()
+
+        private void execute()
+        {
+            BuildRequest buildRequest = ParseBuildRequest();
+            BuildDLLs(buildRequest);
+            SendLogs();
+            CreateTestRequest();
+        }
+
+        public override void processMessage(Message msg)
+        {
+            execute();
+            msg.to = "TestHarness";
+            msg.from = "Builder";
+            environ.testHarness.postMessage(msg);
+        }
+        private BuildRequest ParseBuildRequest()
         {
             //read from xml file. 
             string trXml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
@@ -36,7 +51,7 @@ namespace FederationServer
 
         }
 
-        public void SendLogs()
+        private void SendLogs()
         {
             string[] tempFiles = Directory.GetFiles(".", "*.log");
             for (int i = 0; i < tempFiles.Length; ++i)
@@ -60,7 +75,7 @@ namespace FederationServer
             }
         }
 
-        public void BuildDLLs(BuildRequest request)
+        private void BuildDLLs(BuildRequest request)
         {
             foreach (TestElement testElement in request.tests)
             {
@@ -118,7 +133,7 @@ namespace FederationServer
 
 
 
-        public void CreateTestRequest()
+        private void CreateTestRequest()
         {
 
             "Testing THMessage Class".title('=');

@@ -40,7 +40,7 @@ namespace FederationServer
 
         private static string GetJavaInstallationPath()
         {
-            string environmentPath = Environment.GetEnvironmentVariable("JAVA_HOME");
+            string environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
             if (!string.IsNullOrEmpty(environmentPath))
             {
                 return environmentPath;

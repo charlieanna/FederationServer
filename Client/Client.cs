@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWTools;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,9 +8,23 @@ using System.Threading.Tasks;
 
 namespace FederationServer
 {
-    public class Client
+    public class Client : CommunicatorBase
     {
         public Client()
+        {
+            rcvQ = new BlockingQueue<Message>();
+            start();
+        }
+
+        public override void processMessage(Message msg)
+        {
+            execute();
+            msg.to = "repo";
+            msg.from = "clnt";
+            environ.repo.postMessage(msg);
+        }
+
+        private void execute()
         {
             CleanDirectories();
             CreateBuildRequest();
@@ -20,8 +35,6 @@ namespace FederationServer
         {
             if (!Directory.Exists(RepoStorage))
                 Directory.CreateDirectory(RepoStorage);
-            
-            
         }
 
         public void CreateBuildRequest()

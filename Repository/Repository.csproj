@@ -52,6 +52,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Communicator\Communicator.csproj">
+      <Project>{f4f9b00c-3e4e-46ec-8c23-3a66e8d1ee9b}</Project>
+      <Name>Communicator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Environment\Environment.csproj">
+      <Project>{C757D880-B20E-4CB9-96FB-59BCECCDA5E0}</Project>
+      <Name>Environment</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{a6fce16b-680d-4f0b-8119-ee6ceef5e5fe}</Project>
       <Name>Utilities</Name>

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{366FC641-BFA1-4187-A756-A74E7FD6D5A9}</ProjectGuid>
+    <ProjectGuid>{F4F9B00C-3E4E-46EC-8C23-3A66E8D1EE9B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Client</RootNamespace>
-    <AssemblyName>Client</AssemblyName>
+    <RootNamespace>Communicator</RootNamespace>
+    <AssemblyName>Communicator</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,28 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
+    <Compile Include="BuildingQueue.cs" />
+    <Compile Include="CommunicatorBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Builder\Builder.csproj">
-      <Project>{9e034fed-2a22-43d7-a7fd-862e01423d4a}</Project>
-      <Name>Builder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Communicator\Communicator.csproj">
-      <Project>{f4f9b00c-3e4e-46ec-8c23-3a66e8d1ee9b}</Project>
-      <Name>Communicator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Environment\Environment.csproj">
-      <Project>{C757D880-B20E-4CB9-96FB-59BCECCDA5E0}</Project>
+      <Project>{c757d880-b20e-4cb9-96fb-59bceccda5e0}</Project>
       <Name>Environment</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utilities\Utilities.csproj">
-      <Project>{a6fce16b-680d-4f0b-8119-ee6ceef5e5fe}</Project>
-      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

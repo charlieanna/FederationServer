@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWTools;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,15 +8,30 @@ using System.Threading.Tasks;
 
 namespace FederationServer
 {
-    public class Repository
+    public class Repository : CommunicatorBase
     {
         public Repository()
         {
-            CopyFilesFromRepoStorageToBuildStorage();
+            rcvQ = new BlockingQueue<Message>();
+            start();
         }
         public static string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
         public static string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
         public static List<string> files { get; set; } = new List<string>();
+
+        public override void processMessage(Message msg)
+        {
+            execute();
+            msg.to = "repo";
+            msg.from = "clnt";
+            environ.builder.postMessage(msg);
+        }
+
+        private void execute()
+        {
+            CopyFilesFromRepoStorageToBuildStorage();
+        }
+
         public void CopyFilesFromRepoStorageToBuildStorage()
         {
             if (!Directory.Exists(BuildStorage))

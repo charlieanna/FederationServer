@@ -12,12 +12,12 @@ namespace FederationServer
     {
         private static string GetJavaInstallationPath()
         {
-            string environmentPath = Environment.GetEnvironmentVariable("JAVA_HOME");
+            string environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
             if (!string.IsNullOrEmpty(environmentPath))
             {
                 return environmentPath;
             }
-
+            
             string javaKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\";
             using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(javaKey))
             {

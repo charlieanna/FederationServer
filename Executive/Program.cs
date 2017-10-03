@@ -8,22 +8,43 @@ using System.Xml.Serialization;
 
 namespace FederationServer
 {
+    public class Executive : CommunicatorBase
+    {
+        public Executive()
+        {
+            string RepoStorage = "../../../Repository/RepoStorage";
+            string BuildStorage = "../../../Builder/BuilderStorage";
+            string TestStorage = "../../../TestHarness/TestStorage";
+            if (Directory.Exists(RepoStorage))
+                Directory.Delete(RepoStorage, true);
+            if (Directory.Exists(BuildStorage))
+                Directory.Delete(BuildStorage, true);
+            if (Directory.Exists(TestStorage))
+                Directory.Delete(TestStorage, true);
+            environ.client = new Client();
+            environ.repo = new Repository();
+            environ.builder = new Builder();
+            environ.testHarness = new TestHarness();
 
-    public class Program
+        }
+        public void doop()
+        {
+            Message msg = Message.makeMsg("test", "clnt", "exec", "this is a message flow test");
+            environ.client.postMessage(msg);
+        }
+    }
+
+    public class TestMsgPass
     {
         static void Main(string[] args)
         {
-            string RepoStorage  = "../../../Repository/RepoStorage";
-            string BuildStorage = "../../../Builder/BuilderStorage";
-            string TestStorage = "../../../TestHarness/TestStorage";
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Directory.Delete(RepoStorage, true);
-            Directory.Delete(BuildStorage, true);
-            Directory.Delete(TestStorage, true);
-            Client client = new Client();
-            Repository repository = new Repository();
-            Builder builder = new Builder();
-            TestHarness testHarness = new TestHarness();
+            Console.Write("\n  Starting Federation Server");
+            Console.Write("\n ================================================");
+
+            Executive exec = new Executive();   // builds federation components
+            exec.doop();                        // starts federation processing
+            Environment.wait();
+            Console.Write("\n\n");
         }
     }
 }

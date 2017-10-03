@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SWTools;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,18 +9,23 @@ using System.Threading.Tasks;
 namespace FederationServer
 {
 
-    public class TestHarness
+    public class TestHarness : CommunicatorBase
     {
 
         public TestHarness()
         {
-            TestRequest testRequest = ParseTestRequest();
-            LoadDLL(testRequest);
+            rcvQ = new BlockingQueue<Message>();
+            start();
             // put the test.logger inside the repo storage.
         }
         public static string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
         public static List<string> files { get; set; } = new List<string>();
-        public TestRequest ParseTestRequest()
+        public void execute()
+        {
+            TestRequest testRequest = ParseTestRequest();
+            LoadDLL(testRequest);
+        }
+        private TestRequest ParseTestRequest()
         {
             //read from xml file. 
             string trXml = File.ReadAllText(TestStorage + "/TestRequest.xml");
@@ -31,7 +37,7 @@ namespace FederationServer
             return testRequest;
         }
 
-        public void LoadDLL(TestRequest testRequest)
+        private void LoadDLL(TestRequest testRequest)
         {
             Console.Write("\n  Demonstrating Robust Test Loader");
             Console.Write("\n ==================================\n");

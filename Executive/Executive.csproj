@@ -57,6 +57,14 @@
       <Project>{366fc641-bfa1-4187-a756-a74e7fd6d5a9}</Project>
       <Name>Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Communicator\Communicator.csproj">
+      <Project>{f4f9b00c-3e4e-46ec-8c23-3a66e8d1ee9b}</Project>
+      <Name>Communicator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Environment\Environment.csproj">
+      <Project>{C757D880-B20E-4CB9-96FB-59BCECCDA5E0}</Project>
+      <Name>Environment</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{51ab63ff-f2ad-49f6-ac56-35f0e2a3f5b0}</Project>
       <Name>Repository</Name>
