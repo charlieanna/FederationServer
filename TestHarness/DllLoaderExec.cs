@@ -25,6 +25,11 @@ namespace FederationServer
 {
     class DllLoaderExec
     {
+        public TestElement Test { get; set; }
+        public DllLoaderExec(TestElement test)
+        {
+            Test = test;
+        }
         public static string testersLocation { get; set; } = ".";
 
         /*----< library binding error event handler >------------------*/
@@ -52,11 +57,9 @@ namespace FederationServer
 
             try
             {
-                DllLoaderExec loader = new DllLoaderExec();
-
                 // load each assembly found in testersLocation
 
-                string[] files = Directory.GetFiles(testersLocation, "*.jar");
+                string[] files = Directory.GetFiles(testersLocation, Test.testDriver);
                 foreach (string file in files)
                 {
                     //Assembly asm = Assembly.LoadFrom(file);
@@ -72,7 +75,7 @@ namespace FederationServer
                         // if type supports ITest interface then run test
 
                         if (t.GetInterface("CSTestDemo.ITest", true) != null)
-                            if (!loader.runSimulatedTest(t, asm))
+                            if (!runSimulatedTest(t, asm))
                                 Console.Write("\n  test {0} failed to run", t.ToString());
                     }
                 }

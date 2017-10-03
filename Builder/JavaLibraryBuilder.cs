@@ -30,10 +30,11 @@ namespace FederationServer
 
             foreach (string test in tests)
             {
-                testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + test);
+                testNames.Add( test);
+                
             }
             // goes into executive.
-            testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + testElement.testDriver);
+            testNames.Add( testElement.testDriver); //"..\\..\\..\\Builder\\BuilderStorage\\" +
             sourceCodeBuilder(testElement, testNames);
             testDriverBuilder(testElement, testNames);
         }
@@ -63,26 +64,30 @@ namespace FederationServer
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
             string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
             string javacPath = Path.Combine(installPath, "bin\\Javac.exe");
-            List<string> tests = testElement.testCodes;
+            List<string> tests = testNames;
             List<string> classNames = new List<string>();
-
+            String path = "";
             foreach (string test in tests)
             {
-                string kclass = "..\\..\\..\\Builder\\BuilderStorage\\" + test.Remove(test.LastIndexOf("."));
-                classNames.Add(kclass + ".class");
+                string kclass = test.Remove(test.LastIndexOf("."));
+                string fileName = (kclass + ".class");
+                classNames.Add( fileName);
             }
             try
             {
                 string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
                 Process process = new Process();
                 process.StartInfo.FileName = jarPath;
-                process.StartInfo.Arguments = "cfe ..\\..\\..\\TestHarness\\TestStorage\\" + driver +".jar TestDriver TestDriver.class " + String.Join(" ", classNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
+                process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
+                process.StartInfo.Arguments = "cfe " + driver +".jar " + driver + " " + String.Join(" ", classNames); // ..\\..\\..\\TestHarness\\TestStorage\\
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
+                Console.WriteLine("Building Java Library for : " + testElement.testName);
+                Console.WriteLine(output);
                 using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(@"build2.log"))
                 {
@@ -107,6 +112,7 @@ namespace FederationServer
                 //puts the .class files in the build storage
                 Process process = new Process();
                 process.StartInfo.FileName = javacPath;
+                process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
                 process.StartInfo.Arguments = String.Join(" ", testNames); 
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
@@ -114,6 +120,8 @@ namespace FederationServer
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
+                Console.WriteLine("Compiling Java classes for: " + testElement.testName);
+                Console.WriteLine("Result:" + output);
                 using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(@"build3.log"))
                 {

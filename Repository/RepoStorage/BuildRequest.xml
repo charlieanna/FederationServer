@@ -23,7 +23,7 @@
     <TestElement>
       <testName>test3</testName>
       <toolchain>csharp</toolchain>
-      <testDriver>TestDriver.cs</testDriver>
+      <testDriver>TestDriver1.cs</testDriver>
       <testCodes>
         <string>Tested3.cs</string>
       </testCodes>
@@ -31,7 +31,7 @@
     <TestElement>
       <testName>test4</testName>
       <toolchain>csharp</toolchain>
-      <testDriver>TestDriverBuildFailed.cs</testDriver>
+      <testDriver>TestDriverBuildFail.cs</testDriver>
       <testCodes>
         <string>Tested1.cs</string>
         <string>Tested2.cs</string>

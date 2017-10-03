@@ -54,10 +54,16 @@ namespace FederationServer
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
+                Console.WriteLine("Building: " + testElement.testName);
+                Console.WriteLine("Result:" + output);
+                if (output.Contains("error"))
+                {
+
+                }
                 using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(@"build.log"))
                 {
-                    file.Write(output);
+                    file.WriteLine(output);
                 }
             }
             catch (Exception e)
@@ -80,6 +86,8 @@ namespace FederationServer
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
                 string output = process.StandardOutput.ReadToEnd();
+                Console.WriteLine("Building Library for Source Code: " + testElement.testName);
+                Console.WriteLine("Result:" + output);
                 using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(@"build1.log"))
                 {

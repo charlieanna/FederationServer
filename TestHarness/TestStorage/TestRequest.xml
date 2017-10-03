@@ -16,5 +16,21 @@
       <testDriver>TestDriver.java</testDriver>
       <testCodes />
     </TestElement>
+    <TestElement>
+      <testName>test1</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriver1.dll</testDriver>
+      <testCodes>
+        <string>test3.dll</string>
+      </testCodes>
+    </TestElement>
+    <TestElement>
+      <testName>test1</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriverBuildFail.dll</testDriver>
+      <testCodes>
+        <string>test4.dll</string>
+      </testCodes>
+    </TestElement>
   </tests>
 </TestRequest>

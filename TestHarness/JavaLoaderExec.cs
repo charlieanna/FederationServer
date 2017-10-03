@@ -24,13 +24,13 @@ namespace FederationServer
                 string currentVersion = rk.GetValue("CurrentVersion").ToString();
                 using (Microsoft.Win32.RegistryKey key = rk.OpenSubKey(currentVersion))
                 {
-                    Console.Write(key.GetValueNames());
                     return key.GetValue("JavaHome").ToString();
                 }
             }
         }
         public string test(TestElement testElement)
         {
+            Console.Write("\n  loaded {0}", testElement.testDriver);
             string installPath = GetJavaInstallationPath();
             string javaPath = Path.Combine(installPath, "bin\\Java.exe");
             string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
@@ -40,6 +40,7 @@ namespace FederationServer
             {
                 Process process = new Process();
                 process.StartInfo.FileName = javaPath;
+                //process.StartInfo.WorkingDirectory = "..\\..\\..\\TestHarness\\TestStorage\\";
                 process.StartInfo.Arguments = "-jar " + driver + ".jar"; ///out:" + BuildStorage+"/"+testElement.testDriver + ".dll "
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 

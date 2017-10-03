@@ -59,14 +59,14 @@ namespace FederationServer
             Build.TestElement te3 = new Build.TestElement();
             te3.toolchain = "csharp";
             te3.testName = "test3";
-            te3.addDriver("TestDriver.cs");
+            te3.addDriver("TestDriver1.cs");
             te3.addCode("Tested3.cs");
 
             // CSharp Build Fail
             Build.TestElement te4 = new Build.TestElement();
             te4.toolchain = "csharp";
             te4.testName = "test4";
-            te4.addDriver("TestDriverBuildFailed.cs");
+            te4.addDriver("TestDriverBuildFail.cs");
             te4.addCode("Tested1.cs");
             te4.addCode("Tested2.cs");
 

@@ -18,6 +18,15 @@ namespace FederationServer
             start();
             // put the test.logger inside the repo storage.
         }
+
+        public override void processMessage(Message msg)
+        {
+            execute();
+            msg.to = "clnt";
+            msg.from = "thrn";
+            msg.body = "quit";
+            environ.client.postMessage(msg);
+        }
         public  string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
         public  List<string> files { get; set; } = new List<string>();
         private void execute()
@@ -45,7 +54,7 @@ namespace FederationServer
             {
                 if (test.toolchain == "csharp")
                 {
-                    DllLoaderExec loader = new DllLoaderExec();
+                    DllLoaderExec loader = new DllLoaderExec(test);
 
                     DllLoaderExec.testersLocation = TestStorage;
 
