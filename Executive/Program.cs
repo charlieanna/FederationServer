@@ -16,9 +16,10 @@ namespace FederationServer
             string RepoStorage  = "../../../Repository/RepoStorage";
             string BuildStorage = "../../../Builder/BuilderStorage";
             string TestStorage = "../../../TestHarness/TestStorage";
-            //Directory.Delete(RepoStorage);
-            //Directory.Delete(BuildStorage);
-            //Directory.Delete(TestStorage);
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Directory.Delete(RepoStorage, true);
+            Directory.Delete(BuildStorage, true);
+            Directory.Delete(TestStorage, true);
             Client client = new Client();
             Repository repository = new Repository();
             Builder builder = new Builder();

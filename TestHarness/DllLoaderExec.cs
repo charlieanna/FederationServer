@@ -56,7 +56,7 @@ namespace FederationServer
 
                 // load each assembly found in testersLocation
 
-                string[] files = Directory.GetFiles(testersLocation, "*.dll");
+                string[] files = Directory.GetFiles(testersLocation, "*.jar");
                 foreach (string file in files)
                 {
                     //Assembly asm = Assembly.LoadFrom(file);
