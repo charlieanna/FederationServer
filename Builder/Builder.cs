@@ -8,18 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using FederationServer.Build;
-using SWTools;
 
 namespace FederationServer
 {
     public class Builder : CommunicatorBase
     {
-        public Builder()
-        {
-            rcvQ = new BlockingQueue<Message>();
-            start();
-        }
-
         private string RepoStorage { get; } = "../../../Repository/RepoStorage";
         private string BuildStorage { get; } = "../../../Builder/BuilderStorage";
         private string TestStorage { get; } = "../../../TestHarness/TestStorage";
@@ -31,10 +24,8 @@ namespace FederationServer
             BuildLibraries(buildRequest);
             SendLogs();
             CreateTestRequest();
-
-            environ.testHarness.Execute();
+            environ.testHarness.Execute(); //commands TestHarness to start testing. 
         }
-
 
         private BuildRequest ParseBuildRequest()
         {
@@ -55,6 +46,11 @@ namespace FederationServer
                 tempFiles[i] = Path.GetFullPath(tempFiles[i]);
             Files.Clear();
             Files.AddRange(tempFiles);
+            MoveFiles();
+        }
+
+        private void MoveFiles()
+        {
             foreach (var file in Files)
                 try
                 {
@@ -72,49 +68,42 @@ namespace FederationServer
         {
             foreach (var testElement in request.tests)
             {
-                var lBuilder = new LibraryBuilder();
-                lBuilder.build(BuildStorage, testElement);
+                LibraryBuilder.Build(BuildStorage, testElement);
             }
         }
 
+        // Creates TestRequest.xml and puts it in the TestStorage
         private void CreateTestRequest()
         {
             var xml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
             var buildRequest = xml.FromXml<BuildRequest>();
-
-
             "Creating Test Request".Title('=');
             Console.WriteLine();
-            var tr = new TestRequest
-            {
-                author = "Jim Fawcett"
-            };
-            foreach (var test in buildRequest.tests)
-                if (test.toolchain == "csharp")
-                {
-                    var te1 = new TestElement
-                    {
-                        testName = test.testName,
-                        toolchain = test.toolchain
-                    };
-                    te1.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".", StringComparison.Ordinal)) + ".dll");
-                    te1.addCode(test.testName + ".dll");
-                    tr.tests.Add(te1);
-                }
-                else if (test.toolchain == "java")
-                {
-                    var te2 = new TestElement
-                    {
-                        testName = test.testName,
-                        toolchain = test.toolchain
-                    };
-                    te2.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".", StringComparison.Ordinal)) + ".java");
-                    tr.tests.Add(te2);
-                }
-
+            var tr = BuildTestRequest(buildRequest);
             var trXml = tr.ToXml();
             Console.Write("\n  Serialized TestRequest data structure:\n\n  {0}\n", trXml);
             File.WriteAllText(TestStorage + "/TestRequest.xml", trXml);
+        }
+
+        //Builds the Testrequest instance from the build request. 
+        private static TestRequest BuildTestRequest(BuildRequest buildRequest)
+        {
+            var tr = new TestRequest("Jim Fawcett");
+            foreach (var test in buildRequest.tests)
+            {
+                var te = new TestElement(test.testName, test.toolchain);
+                if (test.toolchain == "csharp")
+                {
+                    te.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".", StringComparison.Ordinal)) + ".dll");
+                    te.addCode(test.testName + ".dll");
+                }
+                else if (test.toolchain == "java")
+                {
+                    te.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".", StringComparison.Ordinal)) + ".java");
+                }
+                tr.tests.Add(te);
+            }
+            return tr;
         }
     }
 

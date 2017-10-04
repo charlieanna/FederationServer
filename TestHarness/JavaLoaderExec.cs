@@ -23,12 +23,15 @@ namespace FederationServer
             var javaKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\";
             using (var rk = Registry.LocalMachine.OpenSubKey(javaKey))
             {
-                var currentVersion = rk.GetValue("CurrentVersion").ToString();
-                using (var key = rk.OpenSubKey(currentVersion))
+                if (rk != null)
                 {
-                    if (key != null) return key.GetValue("JavaHome").ToString();
-                    return @"";
+                    var currentVersion = rk.GetValue("CurrentVersion").ToString();
+                    using (var key = rk.OpenSubKey(currentVersion))
+                    {
+                        if (key != null) return key.GetValue("JavaHome").ToString();
+                    }
                 }
+                return @"";
             }
         }
 

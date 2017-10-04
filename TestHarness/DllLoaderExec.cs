@@ -115,7 +115,6 @@ namespace FederationServer
                         return "passed";
                     return "failed";
                 };
-
                 
                 Console.SetOut(streamwriter);
 
@@ -134,19 +133,6 @@ namespace FederationServer
                 return false;
             }
             
-
-            ///////////////////////////////////////////////////////////////////
-            //  You would think that the code below should work, but it fails
-            //  with invalidcast exception, even though the types are correct.
-            //
-            //    DllLoaderDemo.ITest tester = (DllLoaderDemo.ITest)obj;
-            //    tester.say();
-            //    tester.test();
-            //
-            //  This is a design feature of the .Net loader.  If code is loaded 
-            //  from two different sources, then it is considered incompatible
-            //  and typecasts fail, even thought types are Liskov substitutable.
-            //
             return true;
         }
 

@@ -19,6 +19,12 @@ namespace FederationServer.Build
             testName = name;
         }
 
+        public TestElement(string testName, string toolchain)
+        {
+            this.testName = testName;
+            this.toolchain = toolchain;
+        }
+
         public string testName { get; set; }
         public string toolchain { get; set; }
         public string testDriver { get; set; }

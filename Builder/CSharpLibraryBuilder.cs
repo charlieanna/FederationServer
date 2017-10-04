@@ -28,7 +28,6 @@ namespace FederationServer
         {
             var tests = testElement.testCodes;
             var testNames = new List<string>();
-
             foreach (var test in tests)
                 testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + test);
             TestDriverBuilder(testElement, testNames);
@@ -36,33 +35,14 @@ namespace FederationServer
             SourceCodeBuilder(testElement, testNames);
         }
 
-
-        private void SourceCodeBuilder(TestElement testElement, List<string> testNames)
+        private static void SourceCodeBuilder(TestElement testElement, List<string> testNames)
         {
-            var frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
             try
             {
                 using (var process = new Process())
                 {
-                    var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf(".", StringComparison.Ordinal));
-                    process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                    process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" +
-                                                  driver + ".dll " + string.Join(" ", testNames);
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-                    var output = process.StandardOutput.ReadToEnd();
-                    Console.WriteLine("Building: " + testElement.testName);
-                    Console.WriteLine("Result:" + output);
-                    if (output.Contains("error"))
-                    {
-                    }
-                    using (StreamWriter w = File.AppendText(@"build.log"))
-                    {
-                        w.WriteLine(output);
-                    }
+                    BuildSourceCodeDll(testElement, testNames, process);
+                    LogOutput(testElement, process);
                 }
             }
             catch (Exception e)
@@ -71,28 +51,42 @@ namespace FederationServer
             }
         }
 
-        private static void TestDriverBuilder(TestElement testElement, List<string> testNames)
+        private static void LogOutput(TestElement testElement, Process process)
+        {
+            var output = process.StandardOutput.ReadToEnd();
+            Console.WriteLine("Building: " + testElement.testName);
+            Console.WriteLine("Result:" + output);
+            if (output.Contains("error"))
+            {
+            }
+            using (StreamWriter w = File.AppendText(@"build.log"))
+            {
+                w.WriteLine(output);
+            }
+        }
+        private static void BuildSourceCodeDll(TestElement testElement, List<string> testNames, Process process)
         {
             var frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
+            var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf(".", StringComparison.Ordinal));
+            process.StartInfo.FileName = frameworkPath + "/csc.exe";
+            process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" +
+                                          driver + ".dll " + string.Join(" ", testNames);
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+        }
+
+        private static void TestDriverBuilder(TestElement testElement, List<string> testNames)
+        {
+            
             try
             {
                 using (var process = new Process())
                 {
-                    process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                    process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" +
-                                                  testElement.testName + ".dll " + string.Join(" ", testNames);
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-                    var output = process.StandardOutput.ReadToEnd();
-                    Console.WriteLine("Building Library for Source Code: " + testElement.testName);
-                    Console.WriteLine("Result:" + output);
-                    using (StreamWriter w = File.AppendText(@"build.log"))
-                    {
-                        w.WriteLine(output);
-                    }
+                    BuildTestDriverDll(testElement, testNames, process);
+                    LogOutput(testElement, process);
 
                 }
             }
@@ -100,6 +94,19 @@ namespace FederationServer
             {
                 Console.Write(e.Message);
             }
+        }
+
+        private static void BuildTestDriverDll(TestElement testElement, List<string> testNames,  Process process)
+        {
+            var frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
+            process.StartInfo.FileName = frameworkPath + "/csc.exe";
+            process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" +
+                                          testElement.testName + ".dll " + string.Join(" ", testNames);
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
         }
     }
 

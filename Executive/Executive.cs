@@ -28,18 +28,17 @@ namespace Executive
         {
             var testStorage = "../../../TestHarness/TestStorage";
             var buildStorage = "../../../Builder/BuilderStorage";
-            if (Directory.Exists(testStorage))
+            CleanDirectory(buildStorage);
+            CleanDirectory(testStorage);
+        }
+
+        private static void CleanDirectory(string directory)
+        {
+            if (Directory.Exists(directory))
             {
-                var di = new DirectoryInfo(testStorage);
+                var di = new DirectoryInfo(directory);
 
                 foreach (var file in di.GetFiles())
-                    file.Delete();
-            }
-            if (Directory.Exists(buildStorage))
-            {
-                var di1 = new DirectoryInfo(buildStorage);
-
-                foreach (var file in di1.GetFiles())
                     file.Delete();
             }
         }
@@ -55,7 +54,7 @@ namespace Executive
                 Console.Write("\n ================================================");
 
                 Executive.Load(); // builds federation components
-                Executive.CleanDirectories();
+                Executive.CleanDirectories(); // Empties the directories for each new execution
                 Executive.Start(); // starts federation processing
                 Console.Write("\n\n");
             }

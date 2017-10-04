@@ -7,18 +7,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SWTools;
 
 namespace FederationServer
 {
     public class Repository : CommunicatorBase
     {
-        public Repository()
-        {
-            rcvQ = new BlockingQueue<Message>();
-            start();
-        }
-
         public string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
         public string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
         public List<string> Files { get; set; } = new List<string>();
@@ -29,15 +22,18 @@ namespace FederationServer
             environ.builder.Execute();
         }
 
+        //read files from the repoStorage and move to the buildStorage
         private void CopyFilesFromRepoStorageToBuildStorage()
         {
-            if (!Directory.Exists(BuildStorage))
-                Directory.CreateDirectory(BuildStorage);
-            //read files from the repoStorage and move move to the buildStorage
             var tempFiles = Directory.GetFiles(RepoStorage, "*.*");
             for (var i = 0; i < tempFiles.Length; ++i)
                 tempFiles[i] = Path.GetFullPath(tempFiles[i]);
             Files.AddRange(tempFiles);
+            MoveFiles();
+        }
+
+        private void MoveFiles()
+        {
             foreach (var file in Files)
             {
                 Console.Write("\n  \"{0}\"", file);

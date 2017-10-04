@@ -5,7 +5,6 @@ namespace FederationServer
 {
     public interface ICommunicator
     {
-        void postMessage(Message msg);
         void Execute();
     }
 
@@ -33,11 +32,13 @@ namespace FederationServer
 
         public static Message makeMsg(string type, string to, string from, string body)
         {
-            var msg = new Message();
-            msg.type = type;
-            msg.to = to;
-            msg.from = from;
-            msg.body = body;
+            var msg = new Message
+            {
+                type = type,
+                to = to,
+                from = from,
+                body = body
+            };
             return msg;
         }
 

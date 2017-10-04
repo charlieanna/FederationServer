@@ -18,7 +18,7 @@ namespace FederationServer
         public JavaLibraryBuilder(string buildStorage, TestElement testElement)
         {
             BuildStorage = buildStorage;
-            this.TestElement = testElement;
+            TestElement = testElement;
         }
 
         public string BuildStorage { get; }
@@ -54,9 +54,9 @@ namespace FederationServer
                 if (rk != null)
                 {
                     var currentVersion = rk.GetValue("CurrentVersion").ToString();
-                    using (var key = rk.OpenSubKey(currentVersion) ?? throw new ArgumentNullException("rk.OpenSubKey(currentVersion)"))
+                    using (var key = rk.OpenSubKey(currentVersion))
                     {
-                        return key.GetValue("JavaHome").ToString();
+                        if (key != null) return key.GetValue(@"JavaHome").ToString();
                     }
                 }
                 return string.Empty;
@@ -70,13 +70,13 @@ namespace FederationServer
             var classNames = new List<string>();
             foreach (var test in tests)
             {
-                var kclass = test.Remove(test.LastIndexOf("."));
+                var kclass = test.Remove(test.LastIndexOf(".", StringComparison.Ordinal));
                 var fileName = kclass + ".class";
                 classNames.Add(fileName);
             }
             try
             {
-                var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
+                var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf(".", StringComparison.Ordinal));
                 using (var process = new Process())
                 {
                     process.StartInfo.FileName = jarPath;

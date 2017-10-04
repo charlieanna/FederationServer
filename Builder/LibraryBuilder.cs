@@ -10,16 +10,16 @@ namespace FederationServer
 {
     internal class LibraryBuilder
     {
-        public void build(string BuildStorage, TestElement testElement)
+        public static void Build(string buildStorage, TestElement testElement)
         {
             if (testElement.toolchain == "csharp")
             {
-                var builder = new CSharpLibraryBuilder(BuildStorage, testElement);
+                var builder = new CSharpLibraryBuilder(buildStorage, testElement);
                 builder.Build();
             }
             else if (testElement.toolchain == "java")
             {
-                var builder = new JavaLibraryBuilder(BuildStorage, testElement);
+                var builder = new JavaLibraryBuilder(buildStorage, testElement);
                 builder.Build();
             }
         }
