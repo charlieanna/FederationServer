@@ -3,34 +3,34 @@
   <author>Jim Fawcett</author>
   <tests>
     <TestElement>
-      <testName>test1</testName>
-      <toolchain>csharp</toolchain>
-      <testDriver>TestDriver.dll</testDriver>
       <testCodes>
         <string>test1.dll</string>
       </testCodes>
+      <testName>test1</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriver.dll</testDriver>
     </TestElement>
     <TestElement>
+      <testCodes />
       <testName>test2</testName>
       <toolchain>java</toolchain>
       <testDriver>TestDriver.java</testDriver>
-      <testCodes />
     </TestElement>
     <TestElement>
-      <testName>test3</testName>
-      <toolchain>csharp</toolchain>
-      <testDriver>TestDriver1.dll</testDriver>
       <testCodes>
         <string>test3.dll</string>
       </testCodes>
+      <testName>test3</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriver1.dll</testDriver>
     </TestElement>
     <TestElement>
-      <testName>test4</testName>
-      <toolchain>csharp</toolchain>
-      <testDriver>TestDriverBuildFail.dll</testDriver>
       <testCodes>
         <string>test4.dll</string>
       </testCodes>
+      <testName>test4</testName>
+      <toolchain>csharp</toolchain>
+      <testDriver>TestDriverBuildFail.dll</testDriver>
     </TestElement>
   </tests>
 </TestRequest>

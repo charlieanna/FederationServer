@@ -18,10 +18,12 @@ namespace FederationServer
         public DllLoaderExec(TestElement test)
         {
             Test = test;
+
+            testersLocation = ".";
         }
 
         public TestElement Test { get; set; }
-        public static string testersLocation { get; set; } = ".";
+        public static string testersLocation { get; set; }
 
         /*----< library binding error event handler >------------------*/
         /*
@@ -119,11 +121,11 @@ namespace FederationServer
                 Console.SetOut(streamwriter);
 
                 Console.WriteLine("\n{0}  {1}\n", Test.testName, act(status));
-                Console.WriteLine();
                 streamwriter.Flush();
                 Console.SetOut(currentOut);
                 streamwriter.Close();
                 filestream.Close();
+                Console.WriteLine();
                 Console.WriteLine("Done");
             }
             catch (Exception ex)

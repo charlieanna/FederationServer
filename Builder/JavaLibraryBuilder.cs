@@ -21,8 +21,8 @@ namespace FederationServer
             TestElement = testElement;
         }
 
-        public string BuildStorage { get; }
-        public TestElement TestElement { get; }
+        public string BuildStorage { get; set; }
+        public TestElement TestElement { get; set; }
 
         public void Build()
         {
@@ -79,29 +79,39 @@ namespace FederationServer
                 var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf(".", StringComparison.Ordinal));
                 using (var process = new Process())
                 {
-                    process.StartInfo.FileName = jarPath;
-                    process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
-                    process.StartInfo.Arguments =
-                        "cfe " + driver + ".jar " + driver + " " +
-                        string.Join(" ", classNames); // ..\\..\\..\\TestHarness\\TestStorage\\
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-                    var output = process.StandardOutput.ReadToEnd();
-                    Console.WriteLine("Building Java Library for : " + testElement.testName);
-                    Console.WriteLine(output);
-                    using (StreamWriter w = File.AppendText(@"build.log"))
-                    {
-                        w.WriteLine(output);
-                    }
+                    CreateJar(jarPath, classNames, driver, process);
+                    LogOutput(testElement, process);
                 }
             }
             catch (Exception e)
             {
                 Console.Write(e.Message);
             }
+        }
+
+        private static void LogOutput(TestElement testElement, Process process)
+        {
+            var output = process.StandardOutput.ReadToEnd();
+            Console.WriteLine("Building Java Library for : " + testElement.testName);
+            Console.WriteLine(output);
+            using (StreamWriter w = File.AppendText(@"build.log"))
+            {
+                w.WriteLine(output);
+            }
+        }
+
+        private static void CreateJar(string jarPath, List<string> classNames, string driver, Process process)
+        {
+            process.StartInfo.FileName = jarPath;
+            process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
+            process.StartInfo.Arguments =
+                "cfe " + driver + ".jar " + driver + " " +
+                string.Join(" ", classNames); // ..\\..\\..\\TestHarness\\TestStorage\\
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
         }
 
         private static void SourceCodeBuilder(string installPath, TestElement testElement, List<string> testNames)
@@ -112,27 +122,37 @@ namespace FederationServer
                 //puts the .class files in the build storage
                 using (var process = new Process())
                 {
-                    process.StartInfo.FileName = javacPath;
-                    process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
-                    process.StartInfo.Arguments = string.Join(" ", testNames);
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.Start();
-                    var output = process.StandardOutput.ReadToEnd();
-                    Console.WriteLine("Compiling Java classes for: " + testElement.testName);
-                    Console.WriteLine("Result:" + output);
-                    using (StreamWriter w = File.AppendText(@"build.log"))
-                    {
-                        w.WriteLine(output);
-                    }
+                    CompileJavaClasses(testNames, javacPath, process);
+                    LogCompilationOutput(testElement, process);
                 }
             }
             catch (Exception e)
             {
                 Console.Write(e.Message);
             }
+        }
+
+        private static void LogCompilationOutput(TestElement testElement, Process process)
+        {
+            var output = process.StandardOutput.ReadToEnd();
+            Console.WriteLine("Compiling Java classes for: " + testElement.testName);
+            Console.WriteLine("Result:" + output);
+            using (StreamWriter w = File.AppendText(@"build.log"))
+            {
+                w.WriteLine(output);
+            }
+        }
+
+        private static void CompileJavaClasses(List<string> testNames, string javacPath, Process process)
+        {
+            process.StartInfo.FileName = javacPath;
+            process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
+            process.StartInfo.Arguments = string.Join(" ", testNames);
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
         }
     }
 }

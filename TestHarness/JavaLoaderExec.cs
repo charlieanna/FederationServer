@@ -4,11 +4,11 @@
 // Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
 ///////////////////////////////////////////////////////////////////////////
 
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
-using Microsoft.Win32;
-using static System.Diagnostics.ProcessWindowStyle;
+
 
 namespace FederationServer
 {
@@ -47,27 +47,8 @@ namespace FederationServer
                 {
                     using (var process = new Process())
                     {
-                        process.StartInfo.FileName = javaPath;
-                        process.StartInfo.Arguments = "-jar " + driver + ".jar";
-                        process.StartInfo.WindowStyle = Hidden;
-
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.Start();
-                        var output = process.StandardOutput.ReadToEnd();
-                        var filestream = new FileStream("test.log", FileMode.Append, FileAccess.Write);
-                        var streamwriter = new StreamWriter(filestream)
-                        {
-                            AutoFlush = true
-                        };
-                        var currentOut = Console.Out;
-                        Console.SetOut(streamwriter);
-                        Console.WriteLine("\n{0}  {1}\n", testElement.testName, output);
-                        streamwriter.Flush();
-                        Console.SetOut(currentOut);
-                        streamwriter.Close();
-                        filestream.Close();
-                        Console.WriteLine("Done");
+                        LoadJar(javaPath, driver, process);
+                        LogOutput(testElement, process);
                     }
                 }
                 catch (Exception e)
@@ -75,6 +56,36 @@ namespace FederationServer
                     Console.Write(e.Message);
                 }
             return "true";
+        }
+
+        private static void LogOutput(TestElement testElement, Process process)
+        {
+            var output = process.StandardOutput.ReadToEnd();
+            var filestream = new FileStream("test.log", FileMode.Append, FileAccess.Write);
+            var streamwriter = new StreamWriter(filestream)
+            {
+                AutoFlush = true
+            };
+            var currentOut = Console.Out;
+            Console.SetOut(streamwriter);
+            Console.WriteLine("\n{0}  {1}\n", testElement.testName, output);
+            streamwriter.Flush();
+            Console.SetOut(currentOut);
+            streamwriter.Close();
+            filestream.Close();
+            Console.WriteLine();
+            Console.WriteLine("Done");
+        }
+
+        private static void LoadJar(string javaPath, string driver, Process process)
+        {
+            process.StartInfo.FileName = javaPath;
+            process.StartInfo.Arguments = "-jar " + driver + ".jar";
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
         }
     }
 }

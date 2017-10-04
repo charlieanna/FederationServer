@@ -12,9 +12,9 @@ namespace FederationServer
 {
     public class Repository : CommunicatorBase
     {
-        public string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
-        public string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
-        public List<string> Files { get; set; } = new List<string>();
+        private string RepoStorage = "../../../Repository/RepoStorage";
+        private string BuildStorage = "../../../Builder/BuilderStorage";
+        private List<string> Files  = new List<string>();
 
         public override void Execute()
         {
@@ -53,7 +53,7 @@ namespace FederationServer
             try
             {
                 var fileName = Path.GetFileName(fileSpec);
-                var destSpec = Path.Combine(BuildStorage, fileName ?? throw new InvalidOperationException());
+                var destSpec = Path.Combine(BuildStorage, fileName);
                 File.Copy(fileSpec, destSpec, true);
                 result = true;
             }

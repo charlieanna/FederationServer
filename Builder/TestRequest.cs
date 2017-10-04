@@ -18,10 +18,11 @@ namespace FederationServer
         public TestRequest(string auth)
         {
             author = auth;
+            tests = new List<TestElement>();
         }
 
         public string author { get; set; }
-        public List<TestElement> tests { get; set; } = new List<TestElement>();
+        public List<TestElement> tests { get; set; }
 
         public override string ToString()
         {

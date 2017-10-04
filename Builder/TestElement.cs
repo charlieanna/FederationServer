@@ -17,18 +17,20 @@ namespace FederationServer.Build
         public TestElement(string name)
         {
             testName = name;
+
         }
 
         public TestElement(string testName, string toolchain)
         {
             this.testName = testName;
             this.toolchain = toolchain;
+            this.testCodes = new List<string>();
         }
 
         public string testName { get; set; }
         public string toolchain { get; set; }
         public string testDriver { get; set; }
-        public List<string> testCodes { get; set; } = new List<string>();
+        public List<string> testCodes;
 
         public void addDriver(string name)
         {

@@ -12,8 +12,12 @@ namespace FederationServer
 {
     public class Client : CommunicatorBase
     {
-     
-        private string RepoStorage { get; } = "../../../Repository/RepoStorage";
+        public Client()
+        {
+            RepoStorage  = "../../../Repository/RepoStorage";
+        }
+
+        private string RepoStorage { get; set; }
 
         public override void Execute()
         {

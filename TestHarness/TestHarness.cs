@@ -12,9 +12,9 @@ namespace FederationServer
 {
     public class TestHarness : CommunicatorBase
     {
-        public string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
-        private string RepoStorage { get; } = "../../../Repository/RepoStorage";
-        public List<string> Files { get; set; } = new List<string>();
+        private string TestStorage = "../../../TestHarness/TestStorage";
+        private string RepoStorage = "../../../Repository/RepoStorage";
+        private List<string> Files = new List<string>();
 
         public override void Execute()
         {
@@ -39,7 +39,7 @@ namespace FederationServer
                 try
                 {
                     var fileName = Path.GetFileName(file);
-                    var destSpec = Path.Combine(RepoStorage, fileName ?? throw new InvalidOperationException());
+                    var destSpec = Path.Combine(RepoStorage, fileName);
                     File.Copy(file, destSpec, true);
                 }
                 catch (Exception ex)

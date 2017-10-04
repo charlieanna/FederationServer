@@ -21,8 +21,8 @@ namespace FederationServer
             this.testElement = testElement;
         }
 
-        public string BuildStorage { get; }
-        public TestElement testElement { get; }
+        public string BuildStorage { get; set; }
+        public TestElement testElement { get; set; }
 
         public void Build()
         {
