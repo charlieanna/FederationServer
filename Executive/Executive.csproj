@@ -34,12 +34,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Executive.cs" />
@@ -72,10 +66,6 @@
     <ProjectReference Include="..\TestHarness\TestHarness.csproj">
       <Project>{f1b40e59-da1a-48c9-9daf-a30233d6d0a4}</Project>
       <Name>TestHarness</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utilities\Utilities.csproj">
-      <Project>{a6fce16b-680d-4f0b-8119-ee6ceef5e5fe}</Project>
-      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

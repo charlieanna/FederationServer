@@ -17,7 +17,7 @@
       <testCodes />
     </TestElement>
     <TestElement>
-      <testName>test1</testName>
+      <testName>test3</testName>
       <toolchain>csharp</toolchain>
       <testDriver>TestDriver1.dll</testDriver>
       <testCodes>
@@ -25,7 +25,7 @@
       </testCodes>
     </TestElement>
     <TestElement>
-      <testName>test1</testName>
+      <testName>test4</testName>
       <toolchain>csharp</toolchain>
       <testDriver>TestDriverBuildFail.dll</testDriver>
       <testCodes>

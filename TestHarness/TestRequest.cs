@@ -1,24 +1,25 @@
-﻿using System;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
+
 using System.Collections.Generic;
 
 namespace FederationServer
 {
-    public class TestRequest  /* a container for one or more TestElements */
+    public class TestRequest /* a container for one or more TestElements */
     {
-        public string author { get; set; }
-        public List<TestElement> tests { get; set; } = new List<TestElement>();
+        public TestRequest()
+        {
+        }
 
-        public TestRequest() { }
         public TestRequest(string auth)
         {
             author = auth;
         }
-        public override string ToString()
-        {
-            string temp = "\n  author: " + author;
-            foreach (TestElement te in tests)
-                temp += te.ToString();
-            return temp;
-        }
+
+        public string author { get; set; }
+        public List<TestElement> tests { get; set; } = new List<TestElement>();
     }
 }

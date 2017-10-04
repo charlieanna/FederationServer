@@ -1,12 +1,14 @@
-﻿using FederationServer.Build;
-using SWTools;
+﻿///////////////////////////////////////////////////////////////////////////
+// Builder.cs - Process that Parses the Build Request, Builds the Libraries //
+// and commands the TestHarness to start executing the drivers.             //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017        //
+///////////////////////////////////////////////////////////////////////////
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FederationServer.Build;
+using SWTools;
 
 namespace FederationServer
 {
@@ -17,108 +19,123 @@ namespace FederationServer
             rcvQ = new BlockingQueue<Message>();
             start();
         }
-        private string RepoStorage { get; set; } = "../../../Repository/RepoStorage";
-        private string BuildStorage { get; set; } = "../../../Builder/BuilderStorage";
-        private string TestStorage { get; set; } = "../../../TestHarness/TestStorage";
-        private List<string> files { get; set; } = new List<string>();
-        private List<string> files1 { get; set; } = new List<string>();
 
-        public override void processMessage(Message msg)
+        private string RepoStorage { get; } = "../../../Repository/RepoStorage";
+        private string BuildStorage { get; } = "../../../Builder/BuilderStorage";
+        private string TestStorage { get; } = "../../../TestHarness/TestStorage";
+        private List<string> Files { get; } = new List<string>();
+
+        public override void Execute()
         {
-            execute();
-            msg.to = "TestHarness";
-            msg.from = "Builder";
-            environ.testHarness.postMessage(msg);
-        }
-        private void execute()
-        {
-            BuildRequest buildRequest = ParseBuildRequest();
+            var buildRequest = ParseBuildRequest();
             BuildLibraries(buildRequest);
             SendLogs();
             CreateTestRequest();
+
+            environ.testHarness.Execute();
         }
 
 
         private BuildRequest ParseBuildRequest()
         {
             //read from xml file. 
-            string trXml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
-            BuildRequest buildRequest = trXml.FromXml<BuildRequest>();
-            string typeName = buildRequest.GetType().Name;
+            var trXml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
+            var buildRequest = trXml.FromXml<BuildRequest>();
+            var typeName = buildRequest.GetType().Name;
             Console.Write("\n  deserializing xml string results in type: {0}\n", typeName);
             Console.Write(buildRequest);
             Console.WriteLine();
             return buildRequest;
-
         }
 
         private void SendLogs()
         {
-            string[] tempFiles = Directory.GetFiles(".", "*.log");
-            for (int i = 0; i < tempFiles.Length; ++i)
-            {
+            var tempFiles = Directory.GetFiles(".", "build.log");
+            for (var i = 0; i < tempFiles.Length; ++i)
                 tempFiles[i] = Path.GetFullPath(tempFiles[i]);
-            }
-            files.Clear();
-            files.AddRange(tempFiles);
-            foreach (string file in files)
-            {
+            Files.Clear();
+            Files.AddRange(tempFiles);
+            foreach (var file in Files)
                 try
                 {
-                    string fileName = Path.GetFileName(file);
-                    string destSpec = Path.Combine(RepoStorage, fileName);
+                    var fileName = Path.GetFileName(file);
+                    var destSpec = Path.Combine(RepoStorage, fileName ?? throw new InvalidOperationException());
                     File.Copy(file, destSpec, true);
                 }
                 catch (Exception ex)
                 {
                     Console.Write("\n--{0}--", ex.Message);
                 }
-            }
         }
 
         private void BuildLibraries(BuildRequest request)
         {
-            foreach (TestElement testElement in request.tests)
+            foreach (var testElement in request.tests)
             {
-                LibraryBuilder lBuilder = new LibraryBuilder();
+                var lBuilder = new LibraryBuilder();
                 lBuilder.build(BuildStorage, testElement);
             }
-
         }
+
         private void CreateTestRequest()
         {
-            string xml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
-            BuildRequest buildRequest = xml.FromXml<BuildRequest>();
+            var xml = File.ReadAllText(BuildStorage + "/BuildRequest.xml");
+            var buildRequest = xml.FromXml<BuildRequest>();
 
 
-            "Creating Test Request".title('=');
+            "Creating Test Request".Title('=');
             Console.WriteLine();
-            TestRequest tr = new TestRequest();
-            tr.author = "Jim Fawcett";
-            foreach (Build.TestElement test in buildRequest.tests)
+            var tr = new TestRequest
             {
+                author = "Jim Fawcett"
+            };
+            foreach (var test in buildRequest.tests)
                 if (test.toolchain == "csharp")
                 {
-                    TestElement te1 = new TestElement();
-                    te1.testName = "test1";
-                    te1.toolchain = "csharp";
-                    te1.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".")) + ".dll");
+                    var te1 = new TestElement
+                    {
+                        testName = test.testName,
+                        toolchain = test.toolchain
+                    };
+                    te1.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".", StringComparison.Ordinal)) + ".dll");
                     te1.addCode(test.testName + ".dll");
                     tr.tests.Add(te1);
                 }
-                else if (test.toolchain == "java") {
-                    TestElement te2 = new TestElement();
-                    te2.testName = "test2";
-                    te2.toolchain = "java";
-                    te2.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".")) + ".java");
+                else if (test.toolchain == "java")
+                {
+                    var te2 = new TestElement
+                    {
+                        testName = test.testName,
+                        toolchain = test.toolchain
+                    };
+                    te2.addDriver(test.testDriver.Remove(test.testDriver.LastIndexOf(".", StringComparison.Ordinal)) + ".java");
                     tr.tests.Add(te2);
                 }
-            }
-            
-            string trXml = tr.ToXml();
+
+            var trXml = tr.ToXml();
             Console.Write("\n  Serialized TestRequest data structure:\n\n  {0}\n", trXml);
             File.WriteAllText(TestStorage + "/TestRequest.xml", trXml);
-
         }
+    }
+
+    internal class TestBuilder
+    {
+#if (TEST_Builder)
+    static void Main(string[] args)
+    {
+      Console.Write("\n  Testing Repository Class");
+      Console.Write("\n =======================\n");
+
+      Client client = new Client();
+      client.Execute();
+
+      Repository repo = new Repository();
+      repo.execute();
+
+      Builder builder = new Builder();
+      builder.Execute();
+      Console.WriteLine();
+    }
+#endif
     }
 }

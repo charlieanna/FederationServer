@@ -5,31 +5,22 @@
 //                                                                       //
 // Jim Fawcett, CSE681 - Software Modeling and Analysis, Fall 2017       //
 ///////////////////////////////////////////////////////////////////////////
-/*
- * If user has entered args on command line then DllLoader assumes that the
- * first parameter is the path to a directory with testers to run.
- * 
- * Otherwise DllLoader checks if it is running from a debug directory.
- * 1.  If so, it assumes the testers directory is "../../Testers"
- * 2.  If not, it assumes the testers directory is "./testers"
- * 
- * If none of these are the case, then DllLoader emits an error message and
- * quits.
- */
+
 
 using System;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 
 namespace FederationServer
 {
-    class DllLoaderExec
+    internal class DllLoaderExec
     {
-        public TestElement Test { get; set; }
         public DllLoaderExec(TestElement test)
         {
             Test = test;
         }
+
+        public TestElement Test { get; set; }
         public static string testersLocation { get; set; } = ".";
 
         /*----< library binding error event handler >------------------*/
@@ -39,45 +30,43 @@ namespace FederationServer
          *  dependent libraries that are not located in the directory
          *  where the Executable is running.
          */
-        static Assembly LoadFromComponentLibFolder(object sender, ResolveEventArgs args)
+        private static Assembly LoadFromComponentLibFolder(object sender, ResolveEventArgs args)
         {
             Console.Write("\n  called binding error event handler");
-            string folderPath = testersLocation;
-            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            var folderPath = testersLocation;
+            var assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
             if (!File.Exists(assemblyPath)) return null;
-            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+            var assembly = Assembly.LoadFrom(assemblyPath);
             return assembly;
         }
         //----< load assemblies from testersLocation and run their tests >-----
 
         public string loadAndExerciseTesters()
         {
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromComponentLibFolder);
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += LoadFromComponentLibFolder;
 
             try
             {
                 // load each assembly found in testersLocation
 
-                string[] files = Directory.GetFiles(testersLocation, Test.testDriver);
-                foreach (string file in files)
+                var files = Directory.GetFiles(testersLocation, Test.testDriver);
+                foreach (var file in files)
                 {
                     //Assembly asm = Assembly.LoadFrom(file);
-                    Assembly asm = Assembly.LoadFile(file);
-                    string fileName = Path.GetFileName(file);
+                    var asm = Assembly.LoadFile(file);
+                    var fileName = Path.GetFileName(file);
                     Console.Write("\n  loaded {0}", fileName);
 
                     // exercise each tester found in assembly
 
-                    Type[] types = asm.GetTypes();
-                    foreach (Type t in types)
-                    {
+                    var types = asm.GetTypes();
+                    foreach (var t in types)
                         // if type supports ITest interface then run test
 
                         if (t.GetInterface("CSTestDemo.ITest", true) != null)
                             if (!runSimulatedTest(t, asm))
-                                Console.Write("\n  test {0} failed to run", t.ToString());
-                    }
+                                Console.Write("\n  test {0} failed to run", t);
                 }
             }
             catch (Exception ex)
@@ -89,41 +78,62 @@ namespace FederationServer
         //
         //----< run tester t from assembly asm >-------------------------------
 
-        bool runSimulatedTest(Type t, Assembly asm)
+        private bool runSimulatedTest(Type t, Assembly asm)
         {
+            var filestream = new FileStream("test.log",  FileMode.Append, FileAccess.Write);
+            var streamwriter = new StreamWriter(filestream)
+            {
+                AutoFlush = true
+            };
+            var currentOut = Console.Out;
             try
             {
                 Console.Write(
-                  "\n  attempting to create instance of {0}", t.ToString()
-                  );
-                object obj = asm.CreateInstance(t.ToString());
+                    "\n  attempting to create instance of {0}", t
+                );
+                var obj = asm.CreateInstance(t.ToString());
 
                 // announce test
 
-                MethodInfo method = t.GetMethod("say");
+                var method = t.GetMethod("say");
                 if (method != null)
                     method.Invoke(obj, new object[0]);
 
                 // run test
 
-                bool status = false;
+                var status = false;
                 method = t.GetMethod("test");
                 if (method != null)
-                    status = (bool)method.Invoke(obj, new object[0]);
+                    status = (bool) method.Invoke(obj, new object[0]);
+                else
+                    Console.Write(
+                        "\n\n  Could not find 'bool test() or say()' in the assembly.\n  Make sure it implements ITest\n  Test failed");
 
-                Func<bool, string> act = (bool pass) =>
+                Func<bool, string> act = pass =>
                 {
                     if (pass)
                         return "passed";
                     return "failed";
                 };
-                Console.Write("\n  test {0}", act(status));
+
+                
+                Console.SetOut(streamwriter);
+
+                Console.WriteLine("\n{0}  {1}\n", Test.testName, act(status));
+                Console.WriteLine();
+                streamwriter.Flush();
+                Console.SetOut(currentOut);
+                streamwriter.Close();
+                filestream.Close();
+                Console.WriteLine("Done");
             }
             catch (Exception ex)
             {
+                Console.SetOut(currentOut);
                 Console.Write("\n  test failed with message \"{0}\"", ex.Message);
                 return false;
             }
+            
 
             ///////////////////////////////////////////////////////////////////
             //  You would think that the code below should work, but it fails
@@ -139,10 +149,8 @@ namespace FederationServer
             //
             return true;
         }
+
         //
         //----< extract name of current directory without its parents ---------
-
-
-        
     }
 }

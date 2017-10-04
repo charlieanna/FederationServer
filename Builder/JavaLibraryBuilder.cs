@@ -1,97 +1,101 @@
-﻿using FederationServer.Build;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FederationServer.Build;
+using Microsoft.Win32;
 
 namespace FederationServer
 {
-    class JavaLibraryBuilder
+    internal class JavaLibraryBuilder
     {
         public JavaLibraryBuilder(string buildStorage, TestElement testElement)
         {
             BuildStorage = buildStorage;
-            this.testElement = testElement;
+            this.TestElement = testElement;
         }
 
-        public string BuildStorage { get; private set; }
-        public TestElement testElement { get; private set; }
+        public string BuildStorage { get; }
+        public TestElement TestElement { get; }
 
-        public void build()
+        public void Build()
         {
-            
-          
-            string driverPath = BuildStorage + "/" + testElement.testDriver;
-            List<string> tests = testElement.testCodes;
-            List<string> testNames = new List<string>();
+            var tests = TestElement.testCodes;
+            var testNames = new List<string>();
 
-            foreach (string test in tests)
+            foreach (var test in tests)
+                testNames.Add(test);
+            var installPath = GetJavaInstallationPath();
+            if (installPath == String.Empty)
             {
-                testNames.Add( test);
-                
+                Console.WriteLine("Seems like you don't have Java installed on your system.");
+                return;
             }
-            // goes into executive.
-            testNames.Add( testElement.testDriver); //"..\\..\\..\\Builder\\BuilderStorage\\" +
-            sourceCodeBuilder(testElement, testNames);
-            testDriverBuilder(testElement, testNames);
+            testNames.Add(TestElement.testDriver); //"..\\..\\..\\Builder\\BuilderStorage\\" +
+            SourceCodeBuilder(installPath, TestElement, testNames);
+            TestDriverBuilder(installPath, TestElement, testNames);
         }
 
-        private string GetJavaInstallationPath()
+        private static string GetJavaInstallationPath()
         {
-            string environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
+            var environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
             if (!string.IsNullOrEmpty(environmentPath))
-            {
                 return environmentPath;
-            }
 
-            string javaKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\";
-            using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(javaKey))
+            var javaKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\";
+            using (var rk = Registry.LocalMachine.OpenSubKey(javaKey))
             {
-                string currentVersion = rk.GetValue("CurrentVersion").ToString();
-                using (Microsoft.Win32.RegistryKey key = rk.OpenSubKey(currentVersion))
+                if (rk != null)
                 {
-                    return key.GetValue("JavaHome").ToString();
+                    var currentVersion = rk.GetValue("CurrentVersion").ToString();
+                    using (var key = rk.OpenSubKey(currentVersion) ?? throw new ArgumentNullException("rk.OpenSubKey(currentVersion)"))
+                    {
+                        return key.GetValue("JavaHome").ToString();
+                    }
                 }
+                return string.Empty;
             }
         }
 
-        private void testDriverBuilder(TestElement testElement, List<string> testNames)
+        private static void TestDriverBuilder(string installPath, TestElement testElement, List<string> testNames)
         {
-            string installPath = GetJavaInstallationPath();
-            string javaPath = Path.Combine(installPath, "bin\\Java.exe");
-            string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
-            string javacPath = Path.Combine(installPath, "bin\\Javac.exe");
-            List<string> tests = testNames;
-            List<string> classNames = new List<string>();
-            String path = "";
-            foreach (string test in tests)
+            var jarPath = Path.Combine(installPath, "bin\\Jar.exe");
+            var tests = testNames;
+            var classNames = new List<string>();
+            foreach (var test in tests)
             {
-                string kclass = test.Remove(test.LastIndexOf("."));
-                string fileName = (kclass + ".class");
-                classNames.Add( fileName);
+                var kclass = test.Remove(test.LastIndexOf("."));
+                var fileName = kclass + ".class";
+                classNames.Add(fileName);
             }
             try
             {
-                string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
-                Process process = new Process();
-                process.StartInfo.FileName = jarPath;
-                process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
-                process.StartInfo.Arguments = "cfe " + driver +".jar " + driver + " " + String.Join(" ", classNames); // ..\\..\\..\\TestHarness\\TestStorage\\
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                Console.WriteLine("Building Java Library for : " + testElement.testName);
-                Console.WriteLine(output);
-                using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"build2.log"))
+                var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
+                using (var process = new Process())
                 {
-                    file.Write(output);
+                    process.StartInfo.FileName = jarPath;
+                    process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
+                    process.StartInfo.Arguments =
+                        "cfe " + driver + ".jar " + driver + " " +
+                        string.Join(" ", classNames); // ..\\..\\..\\TestHarness\\TestStorage\\
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.Start();
+                    var output = process.StandardOutput.ReadToEnd();
+                    Console.WriteLine("Building Java Library for : " + testElement.testName);
+                    Console.WriteLine(output);
+                    using (StreamWriter w = File.AppendText(@"build.log"))
+                    {
+                        w.WriteLine(output);
+                    }
                 }
             }
             catch (Exception e)
@@ -100,32 +104,29 @@ namespace FederationServer
             }
         }
 
-        private void sourceCodeBuilder(TestElement testElement, List<string> testNames)
+        private static void SourceCodeBuilder(string installPath, TestElement testElement, List<string> testNames)
         {
-            string installPath = GetJavaInstallationPath();
-            string javaPath = Path.Combine(installPath, "bin\\Java.exe");
-            string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
-            string javacPath = Path.Combine(installPath, "bin\\Javac.exe");
-            var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+            var javacPath = Path.Combine(installPath, "bin\\Javac.exe");
             try
             {
                 //puts the .class files in the build storage
-                Process process = new Process();
-                process.StartInfo.FileName = javacPath;
-                process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
-                process.StartInfo.Arguments = String.Join(" ", testNames); 
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                Console.WriteLine("Compiling Java classes for: " + testElement.testName);
-                Console.WriteLine("Result:" + output);
-                using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"build3.log"))
+                using (var process = new Process())
                 {
-                    file.Write(output);
+                    process.StartInfo.FileName = javacPath;
+                    process.StartInfo.WorkingDirectory = "..\\..\\..\\Builder\\BuilderStorage\\";
+                    process.StartInfo.Arguments = string.Join(" ", testNames);
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.Start();
+                    var output = process.StandardOutput.ReadToEnd();
+                    Console.WriteLine("Compiling Java classes for: " + testElement.testName);
+                    Console.WriteLine("Result:" + output);
+                    using (StreamWriter w = File.AppendText(@"build.log"))
+                    {
+                        w.WriteLine(output);
+                    }
                 }
             }
             catch (Exception e)
@@ -135,4 +136,3 @@ namespace FederationServer
         }
     }
 }
-

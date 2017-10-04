@@ -1,66 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Win32;
+using static System.Diagnostics.ProcessWindowStyle;
 
 namespace FederationServer
 {
     public class JavaLoaderExec
     {
-        private string GetJavaInstallationPath()
+        private static string GetJavaInstallationPath()
         {
-            string environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
+            var environmentPath = System.Environment.GetEnvironmentVariable("JAVA_HOME");
             if (!string.IsNullOrEmpty(environmentPath))
-            {
                 return environmentPath;
-            }
-            
-            string javaKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\";
-            using (Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(javaKey))
+
+            var javaKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\";
+            using (var rk = Registry.LocalMachine.OpenSubKey(javaKey))
             {
-                string currentVersion = rk.GetValue("CurrentVersion").ToString();
-                using (Microsoft.Win32.RegistryKey key = rk.OpenSubKey(currentVersion))
+                var currentVersion = rk.GetValue("CurrentVersion").ToString();
+                using (var key = rk.OpenSubKey(currentVersion))
                 {
-                    return key.GetValue("JavaHome").ToString();
+                    if (key != null) return key.GetValue("JavaHome").ToString();
+                    return @"";
                 }
             }
         }
-        public string test(TestElement testElement)
+
+        public static string Test(TestElement testElement)
         {
             Console.Write("\n  loaded {0}", testElement.testDriver);
-            string installPath = GetJavaInstallationPath();
-            string javaPath = Path.Combine(installPath, "bin\\Java.exe");
-            string jarPath = Path.Combine(installPath, "bin\\Jar.exe");
-            string javacPath = Path.Combine(installPath, "bin\\Javac.exe");
-            string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
-            try
-            {
-                Process process = new Process();
-                process.StartInfo.FileName = javaPath;
-                //process.StartInfo.WorkingDirectory = "..\\..\\..\\TestHarness\\TestStorage\\";
-                process.StartInfo.Arguments = "-jar " + driver + ".jar"; ///out:" + BuildStorage+"/"+testElement.testDriver + ".dll "
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"java.log"))
+            var installPath = GetJavaInstallationPath();
+            var javaPath = Path.Combine(installPath, @"bin\Java.exe");
+            var driver =
+                testElement.testDriver.Remove(testElement.testDriver.LastIndexOf(@".", StringComparison.Ordinal));
+            if (testElement.testDriver.Length > testElement.testDriver.LastIndexOf(".", StringComparison.Ordinal))
+                try
                 {
-                    file.Write(output);
+                    using (var process = new Process())
+                    {
+                        process.StartInfo.FileName = javaPath;
+                        process.StartInfo.Arguments = "-jar " + driver + ".jar";
+                        process.StartInfo.WindowStyle = Hidden;
+
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.RedirectStandardOutput = true;
+                        process.Start();
+                        var output = process.StandardOutput.ReadToEnd();
+                        var filestream = new FileStream("test.log", FileMode.Append, FileAccess.Write);
+                        var streamwriter = new StreamWriter(filestream)
+                        {
+                            AutoFlush = true
+                        };
+                        var currentOut = Console.Out;
+                        Console.SetOut(streamwriter);
+                        Console.WriteLine("\n{0}  {1}\n", testElement.testName, output);
+                        streamwriter.Flush();
+                        Console.SetOut(currentOut);
+                        streamwriter.Close();
+                        filestream.Close();
+                        Console.WriteLine("Done");
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.Write(e.Message);
-            }
+                catch (Exception e)
+                {
+                    Console.Write(e.Message);
+                }
             return "true";
         }
-
     }
 }
-

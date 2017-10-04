@@ -1,69 +1,68 @@
-﻿using FederationServer.Build;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using FederationServer.Build;
 
 namespace FederationServer
 {
-    class CSharpLibraryBuilder
+    internal class CSharpLibraryBuilder
     {
-        
-        public string BuildStorage { get; private set; }
-        public TestElement testElement { get; private set; }
         public CSharpLibraryBuilder(string buildStorage, TestElement testElement)
         {
             BuildStorage = buildStorage;
             this.testElement = testElement;
         }
-        public void build()
+
+        public string BuildStorage { get; }
+        public TestElement testElement { get; }
+
+        public void Build()
         {
-            string driverPath = BuildStorage + "/" + testElement.testDriver;
+            var tests = testElement.testCodes;
+            var testNames = new List<string>();
 
-            
-
-            List<string> tests = testElement.testCodes;
-            List<string> testNames = new List<string>();
-
-            foreach (string test in tests)
-            {
-                
-                testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\"+ test);
-            }
-            testDriverBuilder(testElement, testNames);
-            testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\"+testElement.testDriver);
-            sourceCodeBuilder(testElement, testNames);
+            foreach (var test in tests)
+                testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + test);
+            TestDriverBuilder(testElement, testNames);
+            testNames.Add("..\\..\\..\\Builder\\BuilderStorage\\" + testElement.testDriver);
+            SourceCodeBuilder(testElement, testNames);
         }
 
 
-        private void sourceCodeBuilder(TestElement testElement, List<string> testNames)
+        private void SourceCodeBuilder(TestElement testElement, List<string> testNames)
         {
-            var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+            var frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
             try
             {
-                Process process = new Process();
-                string driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf("."));
-                process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" + driver + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                Console.WriteLine("Building: " + testElement.testName);
-                Console.WriteLine("Result:" + output);
-                if (output.Contains("error"))
+                using (var process = new Process())
                 {
+                    var driver = testElement.testDriver.Remove(testElement.testDriver.LastIndexOf(".", StringComparison.Ordinal));
+                    process.StartInfo.FileName = frameworkPath + "/csc.exe";
+                    process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" +
+                                                  driver + ".dll " + string.Join(" ", testNames);
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
-                }
-                using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"build.log"))
-                {
-                    file.WriteLine(output);
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.Start();
+                    var output = process.StandardOutput.ReadToEnd();
+                    Console.WriteLine("Building: " + testElement.testName);
+                    Console.WriteLine("Result:" + output);
+                    if (output.Contains("error"))
+                    {
+                    }
+                    using (StreamWriter w = File.AppendText(@"build.log"))
+                    {
+                        w.WriteLine(output);
+                    }
                 }
             }
             catch (Exception e)
@@ -72,34 +71,65 @@ namespace FederationServer
             }
         }
 
-        private static string testDriverBuilder(TestElement testElement, List<string> testNames)
+        private static void TestDriverBuilder(TestElement testElement, List<string> testNames)
         {
-            var frameworkPath = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+            var frameworkPath = RuntimeEnvironment.GetRuntimeDirectory();
             try
             {
-                Process process = new Process();
-                process.StartInfo.FileName = frameworkPath + "/csc.exe";
-                process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" + testElement.testName + ".dll " + String.Join(" ", testNames); ///out:"+BuildStorage+"/"+testElement.testDriver + ".dll "
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                Console.WriteLine("Building Library for Source Code: " + testElement.testName);
-                Console.WriteLine("Result:" + output);
-                using (System.IO.StreamWriter file =
-                new System.IO.StreamWriter(@"build1.log"))
+                using (var process = new Process())
                 {
-                    file.Write(output);
+                    process.StartInfo.FileName = frameworkPath + "/csc.exe";
+                    process.StartInfo.Arguments = "/target:library /out:..\\..\\..\\TestHarness\\TestStorage\\" +
+                                                  testElement.testName + ".dll " + string.Join(" ", testNames);
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.Start();
+                    var output = process.StandardOutput.ReadToEnd();
+                    Console.WriteLine("Building Library for Source Code: " + testElement.testName);
+                    Console.WriteLine("Result:" + output);
+                    using (StreamWriter w = File.AppendText(@"build.log"))
+                    {
+                        w.WriteLine(output);
+                    }
+
                 }
             }
             catch (Exception e)
             {
                 Console.Write(e.Message);
             }
-
-            return frameworkPath;
         }
+    }
+
+    internal class TestMessages
+    {
+#if (TEST_MESSAGES)
+    static void Main(string[] args)
+    {
+      Console.Write("\n  Testing Message Class");
+      Console.Write("\n =======================\n");
+
+      Message msg = new Message();
+      msg.to = "TH";
+      msg.from = "CL";
+      msg.type = "basic";
+      msg.author = "Fawcett";
+      msg.body = "    a body";
+
+      Console.Write("\n  base message:\n    {0}", msg.ToString());
+      Console.WriteLine();
+
+      msg.show();
+      Console.WriteLine();
+
+      Console.Write("\n  Testing Message.fromString(string)");
+      Console.Write("\n ------------------------------------");
+      Message parsed = msg.fromString(msg.ToString());
+      parsed.show();
+      Console.WriteLine();
+    }
+#endif
     }
 }

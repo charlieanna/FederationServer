@@ -1,47 +1,68 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Xml.Serialization;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
 
-namespace FederationServer
+using FederationServer;
+using System;
+using System.IO;
+namespace Executive
 {
     public class Executive : CommunicatorBase
     {
-        public Executive()
+        public static void Load()
         {
-            string BuildStorage = "../../../Builder/BuilderStorage";
-            string TestStorage = "../../../TestHarness/TestStorage";
-            //if (Directory.Exists(BuildStorage))
-            //    Directory.Delete(BuildStorage, true);
-            //if (Directory.Exists(TestStorage))
-            //    Directory.Delete(TestStorage, true);
             environ.client = new Client();
             environ.repo = new Repository();
             environ.builder = new Builder();
             environ.testHarness = new TestHarness();
-
         }
-        public void doop()
+
+        public static void Start()
         {
-            Message msg = Message.makeMsg("test", "clnt", "exec", "this is a message flow test");
-            environ.client.postMessage(msg);
+            environ.client.Execute();
+        }
+
+        public static void CleanDirectories()
+        {
+            var testStorage = "../../../TestHarness/TestStorage";
+            var buildStorage = "../../../Builder/BuilderStorage";
+            if (Directory.Exists(testStorage))
+            {
+                var di = new DirectoryInfo(testStorage);
+
+                foreach (var file in di.GetFiles())
+                    file.Delete();
+            }
+            if (Directory.Exists(buildStorage))
+            {
+                var di1 = new DirectoryInfo(buildStorage);
+
+                foreach (var file in di1.GetFiles())
+                    file.Delete();
+            }
         }
     }
 
     public class TestMsgPass
     {
-        static void Main(string[] args)
+        private static void Main()
         {
-            Console.Write("\n  Starting Federation Server");
-            Console.Write("\n ================================================");
+            try
+            {
+                Console.Write("\n  Starting Federation Server");
+                Console.Write("\n ================================================");
 
-            Executive exec = new Executive();   // builds federation components
-            exec.doop();                        // starts federation processing
-            Environment.wait();
-            Console.Write("\n\n");
+                Executive.Load(); // builds federation components
+                Executive.CleanDirectories();
+                Executive.Start(); // starts federation processing
+                Console.Write("\n\n");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("An error occurred: '{0}'", e.Message);
+            }
         }
     }
 }

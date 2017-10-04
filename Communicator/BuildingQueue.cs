@@ -41,7 +41,7 @@
  */
 
 //
-using System;
+
 using System.Collections;
 using System.Threading;
 
@@ -49,8 +49,8 @@ namespace SWTools
 {
     public class BlockingQueue<T>
     {
-        private Queue blockingQ;
-        object locker_ = new object();
+        private readonly Queue blockingQ;
+        private readonly object locker_ = new object();
 
         //----< constructor >--------------------------------------------
 
@@ -62,7 +62,7 @@ namespace SWTools
 
         public void enQ(T msg)
         {
-            lock (locker_)  // uses Monitor
+            lock (locker_) // uses Monitor
             {
                 blockingQ.Enqueue(msg);
                 Monitor.Pulse(locker_);
@@ -75,14 +75,12 @@ namespace SWTools
 
         public T deQ()
         {
-            T msg = default(T);
+            var msg = default(T);
             lock (locker_)
             {
-                while (this.size() == 0)
-                {
+                while (size() == 0)
                     Monitor.Wait(locker_);
-                }
-                msg = (T)blockingQ.Dequeue();
+                msg = (T) blockingQ.Dequeue();
                 return msg;
             }
         }
@@ -92,14 +90,20 @@ namespace SWTools
         public int size()
         {
             int count;
-            lock (locker_) { count = blockingQ.Count; }
+            lock (locker_)
+            {
+                count = blockingQ.Count;
+            }
             return count;
         }
         //----< purge elements from queue >------------------------------
 
         public void clear()
         {
-            lock (locker_) { blockingQ.Clear(); }
+            lock (locker_)
+            {
+                blockingQ.Clear();
+            }
         }
     }
 

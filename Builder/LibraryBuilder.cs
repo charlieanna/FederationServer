@@ -1,23 +1,27 @@
-﻿using FederationServer.Build;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
+
+using FederationServer.Build;
 
 namespace FederationServer
 {
-    class LibraryBuilder
+    internal class LibraryBuilder
     {
         public void build(string BuildStorage, TestElement testElement)
         {
             if (testElement.toolchain == "csharp")
             {
-                CSharpLibraryBuilder builder = new CSharpLibraryBuilder(BuildStorage, testElement);
-                builder.build();
+                var builder = new CSharpLibraryBuilder(BuildStorage, testElement);
+                builder.Build();
             }
             else if (testElement.toolchain == "java")
             {
-                JavaLibraryBuilder builder = new JavaLibraryBuilder(BuildStorage, testElement);
-                builder.build();
+                var builder = new JavaLibraryBuilder(BuildStorage, testElement);
+                builder.Build();
             }
         }
     }
-
-        
 }

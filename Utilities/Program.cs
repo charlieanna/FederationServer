@@ -1,9 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿///////////////////////////////////////////////////////////////////////////
+// Executive.cs - Process that starts all the other processes and commands //
+// the client to start.                                                    //
+// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+///////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace FederationServer
@@ -12,18 +15,18 @@ namespace FederationServer
     {
         //----< serialize object to XML >--------------------------------
 
-        static public string ToXml(this object obj)
+        public static string ToXml(this object obj)
         {
             // suppress namespace attribute in opening tag
 
-            XmlSerializerNamespaces nmsp = new XmlSerializerNamespaces();
+            var nmsp = new XmlSerializerNamespaces();
             nmsp.Add("", "");
 
             var sb = new StringBuilder();
             try
             {
                 var serializer = new XmlSerializer(obj.GetType());
-                using (StringWriter writer = new StringWriter(sb))
+                using (var writer = new StringWriter(sb))
                 {
                     serializer.Serialize(writer, obj, nmsp);
                 }
@@ -37,12 +40,15 @@ namespace FederationServer
         }
         //----< deserialize XML to object >------------------------------
 
-        static public T FromXml<T>(this string xml)
+        public static T FromXml<T>(this string xml)
         {
             try
             {
                 var serializer = new XmlSerializer(typeof(T));
-                return (T)serializer.Deserialize(new StringReader(xml));
+                using (var stringReader = new StringReader(xml))
+                {
+                    return (T) serializer.Deserialize(stringReader);
+                }
             }
             catch (Exception ex)
             {
@@ -51,18 +57,13 @@ namespace FederationServer
             }
         }
     }
+
     public static class Utilities
     {
-        public static void title(this string aString, char underline = '-')
+        public static void Title(this string aString, char underline = '-')
         {
             Console.Write("\n  {0}", aString);
             Console.Write("\n {0}", new string(underline, aString.Length + 2));
-        }
-    }
-    class Program
-    {
-        static void Main(string[] args)
-        {
         }
     }
 }
