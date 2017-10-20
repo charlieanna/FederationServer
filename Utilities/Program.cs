@@ -1,8 +1,11 @@
 ﻿///////////////////////////////////////////////////////////////////////////
 // Executive.cs - Process that starts all the other processes and commands //
 // the client to start.                                                    //
-// Ankur Kothari, CSE681 - Software Modeling and Analysis, Fall 2017       //
+// Jim Fawcett, CSE681 - Software Modeling and Analysis, Fall 2017       //
 ///////////////////////////////////////////////////////////////////////////
+
+
+
 
 using System;
 using System.IO;

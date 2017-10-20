@@ -3,7 +3,7 @@
 //                Dynamic Link Libraries found in specified location     //
 // ver 2 - tests now return bool for pass or fail                        //
 //                                                                       //
-// Jim Fawcett, CSE681 - Software Modeling and Analysis, Fall 2017       //
+// Jim Fawcett, Ankur Kothari CSE681 - Software Modeling and Analysis, Fall 2017       //
 ///////////////////////////////////////////////////////////////////////////
 
 
